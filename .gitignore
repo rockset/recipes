@@ -1,0 +1,12 @@
+# Python Build
+*.pyc
+
+# Python Virtualenv
+.venv
+
+# Intellij files
+.idea/
+*.iml
+
+# Data Files
+data/

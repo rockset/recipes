@@ -1,0 +1,8 @@
+# Provides rockset Python SDK, CLI - https://pypi.org/project/rockset/
+rockset
+
+# Python client for the Apache Kafka
+kafka-python==1.4.4
+
+# Other utilities
+dateparser==0.7.0
