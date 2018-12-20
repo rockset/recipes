@@ -1,4 +1,10 @@
 # twitter api credentials
+import random
+import string
+
+import boto3
+from tweepy import StreamListener, OAuthHandler, Stream
+
 access_token=""
 access_token_secret=""
 consumer_key=""
@@ -12,7 +18,8 @@ class TweetListener(StreamListener):
     def on_data(self, data):
         record = {}
         record['Data'] = data
-        record['PartitionKey'] = ''.join(random.choice(chars) for _ in range(size))
+        partition_key = ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(10))
+        record['PartitionKey'] = partition_key
         self.kinesis.put_records(Records=[record], StreamName=self.stream_name)
 
 auth=OAuthHandler(consumer_key, consumer_secret)
