@@ -4,5 +4,10 @@ rockset
 # Python client for the Apache Kafka
 kafka-python==1.4.4
 
+# Visualization
+dash==0.35.0
+dash-core-components==0.41.0
+dash-html-components==0.13.4
+
 # Other utilities
 dateparser==0.7.0
