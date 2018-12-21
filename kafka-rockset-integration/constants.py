@@ -40,21 +40,21 @@ ORDER By TotalOrders DESC
 
 GRAPHS = [
     {
-        'title': 'Highest Selling Products',
+        'title': 'HIGHEST SELLING PRODUCTS',
         'query': HIGHEST_SELLING_PRODUCTS,
         'x_label': 'Description',
         'y_label': 'QuantitiesSold',
         'graph_type': GraphType.BAR
     },
     {
-        'title': 'Month on Month Sale',
+        'title': 'MONTH-ON-MONTH SALE',
         'query': MONTH_ON_MONTH_SALE,
         'x_label': 'Month',
         'y_label': 'TotalSale',
         'graph_type': GraphType.LINE
     },
     {
-        'title': 'Country by Orders',
+        'title': 'ORDERS BY COUNTRIES',
         'query': ORDERS_BY_COUNTRIES,
         'x_label': 'Country',
         'y_label': 'TotalOrders',

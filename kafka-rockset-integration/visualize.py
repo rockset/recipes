@@ -29,7 +29,7 @@ def get_data(query, x_label, y_label):
     result[0]
     return {
         'x': [record[x_label] for record in result],
-        'y': [record[x_label] for record in result]
+        'y': [record[y_label] for record in result]
     }
 
 
@@ -45,13 +45,25 @@ def generate_graph_figure(data, graph_type):
     """
     figure = None
     if graph_type == GraphType.BAR:
-        figure = go.Figure(data=[go.Bar(x=data['x'], y=data['y'],
-                                        marker=go.bar.Marker(color='rgb(55, 83, 109)'))])
+        figure = go.Figure(
+            data=[go.Bar(x=data['x'], y=data['y'], marker=go.bar.Marker(color='rgb(55, 83, 109)'))],
+            layout={'title': data['title']}
+        )
     elif graph_type == GraphType.PIE:
-        figure = {'data': [{'values': data['y'], 'labels': data['x'],
-                            'type': 'pie', }, ], }
+        figure = {
+            'data': [{'values': data['y'], 'labels': data['x'], 'type': 'pie'}],
+            'layout': {
+                'title': data['title']
+            }
+        }
     elif graph_type == GraphType.LINE:
-        figure = {'data': [{'y': data['y'], 'x': data['x']}]}
+        figure = {
+            'data': [{'y': data['y'], 'x': data['x']}],
+            'layout': {
+                'title': data['title']
+            }
+        }
+
     return figure
 
 
@@ -75,13 +87,11 @@ def generate_widgets(graphs):
     widgets = []
     for graph in graphs:
         data = get_data(graph['query'], graph['x_label'], graph['y_label'])
+        data.update(graph)
         graph_figure = generate_graph_figure(data, graph['graph_type'])
 
-        widgets.append(
-            html.Div(children=[
-                html.H5(graph['title']),
-                dcc.Graph(figure=graph_figure)
-            ]))
+        widgets.append(html.Div(dcc.Graph(figure=graph_figure), style={'padding': 50}))
+
     return widgets
 
 
