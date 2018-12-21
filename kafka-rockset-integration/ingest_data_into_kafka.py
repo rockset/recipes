@@ -79,6 +79,10 @@ def ingest_into_kafka(records):
     print('{} records ingested'.format(count))
 
 
-if __name__ == '__main__':
+def main():
     records = read_records_from_file(DATA_PATH)
     ingest_into_kafka(records)
+
+
+if __name__ == '__main__':
+    main()
