@@ -7,7 +7,7 @@ import plotly.graph_objs as go
 from rockset import Client, Q
 
 from config import ROCKSET_API_SERVER, ROCKSET_API_KEY
-from contants import *
+from constants import *
 
 rs = Client(api_key=ROCKSET_API_KEY,
             api_server=ROCKSET_API_SERVER)
@@ -25,6 +25,8 @@ def get_data(query, x_label, y_label):
         dict
     """
     result = rs.sql(Q(query))
+
+    result[0]
     return {
         'x': [record[x_label] for record in result],
         'y': [record[x_label] for record in result]
@@ -84,9 +86,11 @@ def generate_widgets(graphs):
 
 
 def main():
-    # Configure and start Dash Application
     app = dash.Dash()
     app.layout = html.Div(children=generate_widgets(GRAPHS))
+    app.css.append_css({
+        'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'
+    })
     app.run_server(debug=True)
 
 
