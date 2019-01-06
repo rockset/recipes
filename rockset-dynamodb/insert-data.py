@@ -11,7 +11,6 @@ with open("dataset/hn_comments") as json_file:
         body = comment['body'] if comment['body'] else None
         retrieved_at_ts = comment['retrieved_at_ts'] if comment['retrieved_at_ts'] else None
         source = comment['source'] if comment['source'] else None
-        print(cid, body, retrieved_at_ts, source)
         table.put_item(
            Item={
                'id': cid,
