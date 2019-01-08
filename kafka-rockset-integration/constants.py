@@ -8,34 +8,30 @@ class GraphType(Enum):
 
 
 HIGHEST_SELLING_PRODUCTS = '''
-SELECT Description, COUNT(InvoiceNo) as QuantitiesSold
+SELECT Description, SUM(Quantity) as QuantitiesSold
 FROM "orders" 
-WHERE DATETIME(_event_time) >= PARSE_DATETIME_ISO8601('2011-01-01T00:00:00')
 GROUP BY Description
 ORDER By QuantitiesSold DESC
-LIMIT 10
+LIMIT 5;
 '''
 
-MONTH_ON_MONTH_SALE = '''
+MINUTE_ON_MINUTE_SALE = '''
 WITH X AS (
-    SELECT InvoiceNo, FORMAT_TIMESTAMP('%Y-%m', DATETIME(_event_time)) as Month, SUM(UnitPrice) as OrderValue
+    SELECT InvoiceNo, FORMAT_TIMESTAMP('%H:%M', DATETIME(_event_time)) as Minute, SUM(UnitPrice) as OrderValue
     FROM "orders"
-    WHERE NOT REGEXP_LIKE(InvoiceNo, 'C.*')
     GROUP BY InvoiceNo, _event_time
-    ORDER BY OrderValue DESC
-)
-SELECT Month, CEIL(SUM(OrderValue)) as TotalSale
-FROM X
-GROUP BY Month
-ORDER BY Month
+  )
+  SELECT Minute, CEIL(SUM(OrderValue)) as TotalSale
+  FROM X
+  GROUP BY Minute
+  ORDER BY Minute;
 '''
 
 ORDERS_BY_COUNTRIES = '''
 SELECT Country, COUNT(DISTINCT InvoiceNo) as TotalOrders
 FROM "orders" 
 GROUP BY Country
-HAVING COUNT(DISTINCT InvoiceNo) > 100
-ORDER By TotalOrders DESC
+ORDER By TotalOrders DESC;
 '''
 
 GRAPHS = [
@@ -47,9 +43,9 @@ GRAPHS = [
         'graph_type': GraphType.BAR
     },
     {
-        'title': 'MONTH-ON-MONTH SALE',
-        'query': MONTH_ON_MONTH_SALE,
-        'x_label': 'Month',
+        'title': 'MINUTE-ON-MINUTE SALE',
+        'query': MINUTE_ON_MINUTE_SALE,
+        'x_label': 'Minute',
         'y_label': 'TotalSale',
         'graph_type': GraphType.LINE
     },
