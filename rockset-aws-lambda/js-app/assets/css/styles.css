@@ -1,0 +1,208 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+body{
+	font: normal 16px Arial, Helvetica, sans-serif;
+}
+
+h1, h3{
+	font: normal 24px 'Open Sans', Arial, Helvetica, sans-serif;
+}
+
+h2 {
+	margin-top: 5px !important; 
+}
+
+/*-----------------
+	The Header
+------------------*/
+
+header {
+	position: fixed;
+	top: 0;
+	left:0;
+	right:0;
+
+	height: 60px;
+	z-index: 100;
+
+	background-color: #282b2c;
+	padding: 20px 40px;
+	color: #fff;
+	box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.1);
+}
+
+header a {
+	color: #ffffff;
+	text-decoration: none;
+}
+
+header h2.tz{
+	float: right;
+	opacity:0.9;
+}
+
+header h2.tz:hover{
+	opacity:1;
+}
+
+header h2.tz a{
+	font-size: 13px;
+	text-transform: uppercase;
+	display: inline-block;
+	padding: 12px 18px;
+	border-radius: 3px;
+	background-color: #5895DB;
+}
+
+@media (max-width: 500px){
+	header {
+		padding: 20px 15px;
+	}
+
+	header h1{
+		font-size: 24px;
+		margin: 0;
+	}
+
+}
+
+/*-----------------
+	Main Content
+------------------*/
+
+
+.main-content {
+	box-sizing: border-box;
+	text-align: center;
+	margin: 125px auto 60px;
+	padding: 0 40px;
+	background-color: #ffffff;
+}
+
+.main-content h3{
+	font-size: 28px;
+	color:  #5a96b9;
+	padding-bottom: 20px;
+}
+
+@media (max-width: 600px){
+	.main-content{
+		margin: 45px auto;
+		padding: 0 25px;
+	}
+
+}
+
+/*-----------------
+	Search Bar
+------------------*/
+
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    border-left: solid 1px #ccc;
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
+
+/*-----------------
+	The Graph
+------------------*/
+
+#graph1 {
+	vertical-align: middle;
+	width: 100%;
+	height: 100%;
+}
+
+#graph1 > svg {
+	width: 100%;
+	height: 100%;
+}
+
+.column1 {
+    float: left;
+	width: 65%;
+	height: 700px;
+}
+
+.column2 {
+    float: left;
+	width: 35%;
+	height: 700px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.centering {
+	text-align: center;
+	margin: 0px auto;
+	width: 50%;
+	position: relative;
+}
+
+/* Recent Tweets */
+.card {
+	display: flex;
+	flex-direction: column;
+	background-color: white;
+	border: 1px solid rgba(0,0,0,.125);
+	border-radius: .25rem;
+	margin-bottom: 30px;
+}
+
+.imglogo {
+	width: 50px;
+	margin: 0px auto;
+	position: relative;
+}
+
+.card-header {
+	padding: .75rem 1.25rem;
+	background-color: white;
+	border-bottom: 1px solid rgba(0,0,0,.075);
+	border-top-left-radius: .25rem;
+	border-top-right-radius: .25rem;
+}
+
+.card-content {
+	padding: .25rem 1.25rem;
+	flex: 1 1 auto;
+}
+
+.editor {
+	position: relative;
+	width: 100%;
+    height: 600px;
+}

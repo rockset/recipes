@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8">
+	<title>Twitter Rockset Demo</title>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet">
+	<link href="assets/css/styles.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script src="./assets/js/script.js"></script>
+</head>
+
+<body>
+	<header class="header">
+		<span class="h2">Lambda API Demo</span>
+	</header>
+
+	<div class="main-content">
+		<div class="centering">
+			<h3>Last <span id="hrs">2</span>s</h3>
+			<div id="slider">
+				<div id="custom-handle" class="ui-slider-handle"></div>
+			</div>
+
+			<div style="clear:both"></div>
+			<br/><br/><br/>
+
+			<table id="myTable" class="stripe">
+				<thead>
+					<tr>
+						<th>Symbol</th>
+						<th># Tweets</th>
+						<th>Company</th>
+						<th>Category</th>
+						<th>Marketcap</th>
+					</tr>
+				</thead>
+				<tbody id="myTBody">
+				</tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>
