@@ -1,4 +1,4 @@
-"""Ingest a data to Kafka"""
+"""Write a data into Kafka"""
 
 import datetime
 import json
@@ -42,7 +42,7 @@ STOCK_DATA = [
 ]
 
 
-def ingest_orders():
+def write_orders():
     """
     Generate orders per second based on predefined products
 
@@ -50,7 +50,7 @@ def ingest_orders():
         None
     """
     kafka_producer = KafkaProducer(bootstrap_servers=KAFKA_BOOTSTRAP_SERVER)
-    print('Ingesting records into Kafka. Kafka Server {}, Topic {}'.format(
+    print('Writing records into Kafka. Kafka Server - {}, Topic - {}'.format(
         ','.join(KAFKA_BOOTSTRAP_SERVER),
         KAFKA_TOPIC))
 
@@ -89,7 +89,7 @@ def ingest_orders():
                 # End Product Selection for loop
 
                 if invoice_no % 100 == 0:
-                    print('{} records ingested'.format(invoice_no))
+                    print('{} records are written'.format(invoice_no))
 
             # Ends Orders in a sec for loop
 
@@ -97,7 +97,7 @@ def ingest_orders():
 
 
 def main():
-    ingest_orders()
+    write_orders()
 
 
 if __name__ == '__main__':
