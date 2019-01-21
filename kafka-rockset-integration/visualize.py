@@ -92,6 +92,21 @@ def generate_widgets(graphs):
 
         widgets.append(html.Div(dcc.Graph(figure=graph_figure), style={'padding': 50}))
 
+    try:
+        # If `customers` collection exists
+        rs.retrieve('customers')
+
+        data = get_data(SALE_BY_ACQUISITION_SOURCE['query'],
+                        SALE_BY_ACQUISITION_SOURCE['x_label'],
+                        SALE_BY_ACQUISITION_SOURCE['y_label'])
+        data.update(SALE_BY_ACQUISITION_SOURCE)
+        graph_figure = generate_graph_figure(data, graph['graph_type'])
+
+        widgets.append(html.Div(dcc.Graph(figure=graph_figure), style={'padding': 50}))
+    except:
+        # Ignore this query if `customers` collection doesn't exist
+        pass
+
     return widgets
 
 
