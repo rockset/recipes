@@ -34,6 +34,18 @@ GROUP BY Country
 ORDER By TotalOrders DESC;
 '''
 
+QUERY_SALE_BY_ACQUISITION_SOURCE = '''
+WITH X AS (
+    SELECT CustomerID, SUM(UnitPrice) as OrderValue
+    FROM orders
+    GROUP BY CustomerID
+)
+SELECT C.AcquisitionSource as AcquisitionSource, CEIL(SUM(X.OrderValue)) as TotalSale
+FROM customers AS C JOIN X on X.CustomerID = Cast(C.CustomerID AS integer)
+GROUP BY C.AcquisitionSource
+ORDER BY TotalSale DESC
+'''
+
 GRAPHS = [
     {
         'title': 'HIGHEST SELLING PRODUCTS',
@@ -57,3 +69,11 @@ GRAPHS = [
         'graph_type': GraphType.PIE
     }
 ]
+
+SALE_BY_ACQUISITION_SOURCE = {
+    'title': 'SALE BY CUSTOMER ACQUISITION SOURCE',
+    'query': QUERY_SALE_BY_ACQUISITION_SOURCE,
+    'x_label': 'AcquisitionSource',
+    'y_label': 'TotalSale',
+    'graph_type': GraphType.PIE
+}
