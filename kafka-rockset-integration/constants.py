@@ -35,13 +35,8 @@ ORDER By TotalOrders DESC;
 '''
 
 QUERY_SALE_BY_ACQUISITION_SOURCE = '''
-WITH X AS (
-    SELECT CustomerID, SUM(UnitPrice) as OrderValue
-    FROM orders
-    GROUP BY CustomerID
-)
-SELECT C.AcquisitionSource as AcquisitionSource, CEIL(SUM(X.OrderValue)) as TotalSale
-FROM customers AS C JOIN X on X.CustomerID = Cast(C.CustomerID AS integer)
+SELECT C.AcquisitionSource, CEIL(SUM(O.UnitPrice)) as TotalSale
+FROM customers AS C JOIN orders as O on O.CustomerID = Cast(C.CustomerID AS integer)
 GROUP BY C.AcquisitionSource
 ORDER BY TotalSale DESC
 '''
