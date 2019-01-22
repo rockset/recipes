@@ -12,7 +12,7 @@ table = dynamodb.create_table(
     AttributeDefinitions=[
         {
             'AttributeName': 'id',
-            'AttributeType': 'N'
+            'AttributeType': 'S'
         }
     ],
     ProvisionedThroughput={
