@@ -60,7 +60,9 @@ S3_PATH=s3://rockset-data/github-data/
 ```
 ./github-s3-uploader.sh
 ```
-11. As we have already created a Rockset collection, data ingest would start as soon as files are uploaded into an S3 bucket. You can monitor the data ingestion progress. **fill_progress** will reach to 1 when the data load completes. 
+11. Console logs will show the upload progress. Also `s3://rockset-data/github-data/meta.txt` records the date till which data is uploaded.
+
+12. As we have already created a Rockset collection, data ingest would start as soon as files are uploaded into an S3 bucket. You can monitor the data ingestion progress. **fill_progress** will reach to 1 when the data load completes. 
 ```
 rock describe collection github
 …
