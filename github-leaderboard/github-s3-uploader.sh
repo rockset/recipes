@@ -43,7 +43,7 @@ do_tail() {
            break
        fi
 
-       wget -q -N http://data.gharchive.org/"$DATE-"{0..3}.json.gz
+       wget -q -N http://data.gharchive.org/"$DATE-"{0..23}.json.gz
        if [ $? -ne 0 ]
        then
            # if we could not find the file and we are trying to find a

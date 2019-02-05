@@ -51,9 +51,9 @@ S3_PATH=s3://rockset-github-rank/github-data/
 ./github-s3-uploader.sh
 ```
 
-9. Create a Rockset Collection github-rank via aws-rockset integration using github-data residing in the AWS S3 bucket that you created in Step 4 earlier. If this command fails with the message "has zero s3 objects", then wait for sometime for the uploader script to start populating the S3 bucket and re-run this command.
+9. Create a Rockset Collection github via aws-rockset integration using github-data residing in the AWS S3 bucket that you created in Step 4 earlier. If this command fails with the message "has zero s3 objects", then wait for sometime for the uploader script to start populating the S3 bucket and re-run this command.
 ```
-rock create collection github-rank s3://rockset-github-rank/github-data --integration=aws-rockset
+rock create collection github s3://rockset-github-rank/github-data --integration=aws-rockset
 ```
 
 10. Console logs will show the upload progress. Also `s3://rockset-data/github-data/meta.txt` records the date till which data is uploaded.
