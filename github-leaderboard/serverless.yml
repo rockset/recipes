@@ -47,12 +47,10 @@ provider:
 
 # you can add packaging information here
 package:
-  #  include:
-  #    - leaderboard.py
-  #    - venv/**
-  #  exclude:
-  - node_modules/**
-  - __pycache__/**
+  exclude:
+    - node_modules/**
+    - __pycache__/**
+    - .idea/**
 
 functions:
   contributors:
@@ -61,6 +59,7 @@ functions:
       - http:
           path: /contributors
           method: get
+          cors: true
   rank:
     handler: leaderboard.rank
     events:
@@ -71,6 +70,7 @@ functions:
             parameters:
               paths:
                 username: true
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

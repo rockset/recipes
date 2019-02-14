@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta charset="utf-8">
+    <title>Github Dashboard with Rockset</title>
+
+    <link crossorigin="anonymous"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="./assets/js/script.js"></script>
+</head>
+
+<body>
+<header class="header">
+    <span>Github Leaderboard with Rockset</span>
+</header>
+
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3>Top Contributors</h3>
+                <table class="table" id="myTable">
+                    <thead>
+                    <tr>
+                        <th>Contributor</th>
+                        <th>Commits</th>
+                    </tr>
+                    </thead>
+                    <tbody id="myTBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="col col-left-border">
+                <h3>Get Contributor's Rank</h3>
+                <form id="contributor-form">
+                    <div class="form-group">
+                        <label for="contributor">Contributor Username</label>
+                        <input class="form-control" id="contributor" name="contributor" placeholder="Enter contributor username"
+                               required type="text">
+                    </div>
+                    <button class="btn btn-default" id="contributor-form-button" type="submit">Get
+                        Rank
+                    </button>
+                </form>
+                <div style="margin-top: 50px">
+                    <div id="success-rank" style="display: none">
+                        <span>Github Rank for user <span class="rank-user"></span> is </span>
+                        <br/>
+                        <span id="rank"></span>
+                    </div>
+                    <div id="fail-rank" style="display: none">
+                        No details found for <span class="rank-user"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+
+</html>

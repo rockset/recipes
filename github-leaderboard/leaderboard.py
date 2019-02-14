@@ -45,27 +45,32 @@ WHERE Commits >= (
     WHERE Contributor = '{}')
 '''
 
+HEADERS = {"Access-Control-Allow-Origin": "*"}
+
 
 def contributors(event, context):
     try:
         results = client.sql(Q(TOP_CONTRIBUTORS_QUERY)).results()
-        return {"statusCode": 200, "body": json.dumps(results)}
+        return {"statusCode": 200, "headers": HEADERS, "body": json.dumps(results)}
     except Exception as e:
         print('Error finding top contributors {}'.format(e))
-        return {"statusCode": 500, "body": json.dumps({'msg': 'Internal Error'})}
+        return {"statusCode": 500, "headers": HEADERS,
+                "body": json.dumps({'msg': 'Internal Error'})}
 
 
 def rank(event, context):
     try:
         username = event.get('pathParameters', {}).get('username', None)
         if not username:
-            return {"statusCode": 400, "body": json.dumps({'msg': 'Please provide "username"'})}
+            return {"statusCode": 400, "headers": HEADERS,
+                    "body": json.dumps({'msg': 'Please provide "username"'})}
         else:
             results = client.sql(Q(INDIVIDUAL_CONTRIBUTOR_RANK.format(username))).results()
-            return {"statusCode": 200, "body": json.dumps(results)}
+            return {"statusCode": 200, "headers": HEADERS, "body": json.dumps(results)}
     except Exception as e:
         print('Error finding rank {}'.format(e))
-        return {"statusCode": 500, "body": json.dumps({'msg': 'Internal Error'})}
+        return {"statusCode": 500, "headers": HEADERS,
+                "body": json.dumps({'msg': 'Internal Error'})}
 
 
 if __name__ == '__main__':

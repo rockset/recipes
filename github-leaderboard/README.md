@@ -117,3 +117,17 @@ This is simple servless app which enables user to find his github rank. This gui
       }
     ]
     ```
+1. The API base path is `https://<string>.amazonaws.com/dev/`
+
+1. Now, we can run a UI app which will show us top 10 contributors and also help you to find your own github rank.
+
+1. Open a file [script.js](./js-app/assets/js/script.js). Change the `BASE_URL` with BASE_URL mentioned in above step.
+
+1. Run a simple HTTP server
+    ```
+    cd js-app
+    python3 -m http.server 9191
+    ```
+1. Click [here](http://localhost:9191/)
+
+![](./Leaderboard.png)
