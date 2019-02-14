@@ -79,15 +79,41 @@ This is simple servless app which enables user to find his github rank. This gui
 
 1. Install Serverless `npm install -g serverless`
 
-1. Install all serverless dependencies `npm install .`
+1. Install all serverless dependencies `npm install`
 
 1. Update `ROCKSET_API_KEY` in `config.py`.
 
-1. Deploy code to AWS Lambda `sls deploy`. It should deploy the Python code to AWS Lambda and create a API Endpoints on it. You should sse an output containing
-```
-...
-endpoints:
-  GET - https://<string>.amazonaws.com/dev/contributors
-  POST - https://<string>.amazonaws.com/dev/rank
-...
-```
+1. Deploy code to AWS Lambda `sls deploy`. It should deploy the Python code to AWS Lambda and create a API Endpoints on it. You should see an output containing
+    ```
+    ...
+    endpoints:
+      GET - https://<string>.amazonaws.com/dev/contributors
+      GET - https://<string>.amazonaws.com/dev/rank/{username}
+    ...
+    ```
+1. Get Top 10 Contributors
+    ```
+    curl https://<string>.amazonaws.com/dev/contributors
+    
+    [
+      {
+        "Contributor": "discoursebot",
+        "Commits": 70
+      },
+      {
+        "Contributor": "ged-odoo",
+        "Commits": 66
+      },
+      ...
+    ]
+    ```
+1. Get Github Rank of a specific user
+    ```
+    curl curl https://<string>.amazonaws.com/dev/rank/discoursebot
+    
+    [
+      {
+        "Rank": 1
+      }
+    ]
+    ```

@@ -56,13 +56,16 @@ def contributors(event, context):
 
 
 def rank(event, context):
-    body = json.loads(event['body'])
-    if not body or 'username' not in body:
-        return {"statusCode": 200, "body": 'Pass username'}
-    else:
-        username = body['username']
-        results = client.sql(Q(INDIVIDUAL_CONTRIBUTOR_RANK.format(username))).results()
-        return {"statusCode": 200, "body": json.dumps(results)}
+    try:
+        username = event.get('pathParameters', {}).get('username', None)
+        if not username:
+            return {"statusCode": 400, "body": json.dumps({'msg': 'Please provide "username"'})}
+        else:
+            results = client.sql(Q(INDIVIDUAL_CONTRIBUTOR_RANK.format(username))).results()
+            return {"statusCode": 200, "body": json.dumps(results)}
+    except Exception as e:
+        print('Error finding rank {}'.format(e))
+        return {"statusCode": 500, "body": json.dumps({'msg': 'Internal Error'})}
 
 
 if __name__ == '__main__':
@@ -70,8 +73,10 @@ if __name__ == '__main__':
     print('Top Contributors {}'.format(json.dumps(top_contributors, indent=3)))
 
     username = 'discoursebot'
-    body = {
-        'username': username
+    event = {
+        'pathParameters': {
+            'username': username
+        }
     }
 
-    print('Rank of {} is {}'.format(username, rank({'body': json.dumps(body)}, None)))
+    print('Rank of {} is {}'.format(username, rank(event, None)))
