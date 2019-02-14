@@ -55,18 +55,19 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
-  hello:
-    handler: leaderboard.handler
+  contributors:
+    handler: leaderboard.contributors
     events:
       - http:
-          path: /hello
-          method: get        
-  leaderboard_1:
-    handler: leaderboard.collections
-    events:
-      - http:
-          path: /collections
+          path: /contributors
           method: get
+  rank:
+    handler: leaderboard.rank
+    events:
+      - http:
+          path: /rank
+          method: post
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
