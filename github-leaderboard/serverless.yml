@@ -20,6 +20,7 @@ service: github-leaderboard # NOTE: update this with your service name
 provider:
   name: aws
   runtime: python3.6
+  region: us-west-2
 
 
 # you can add packaging information here
