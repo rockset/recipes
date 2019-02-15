@@ -28,6 +28,7 @@ package:
     - node_modules/**
     - __pycache__/**
     - .idea/**
+    - .venv/**
 
 functions:
   contributors:

@@ -1,1 +1,2 @@
-rockset
+rockset==0.5.15b20190124
+python-dotenv

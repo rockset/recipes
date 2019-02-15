@@ -2,10 +2,16 @@ import json
 
 from rockset import Client, Q
 
-import config
+import os
+from os import path
+from dotenv import load_dotenv
 
-client = Client(api_server='api.rs2.usw2.rockset.com',
-                api_key=config.ROCKSET_API_KEY)
+CURRENT_DIR = path.dirname(os.path.abspath(__file__))
+
+load_dotenv(dotenv_path=os.path.join(CURRENT_DIR, 'config.env'))
+
+client = Client(api_server=os.environ.get('ROCKSET_APISERVER'),
+                api_key=os.environ.get('ROCKSET_APIKEY'))
 
 TOP_CONTRIBUTORS_QUERY = '''
 WITH multi_contributor_repos as (

@@ -6,7 +6,7 @@ This project also provides steps to deploy `Github Leaderboard` app on top Rocks
 ## Import Github Archive Data into S3
 
 ### Prerequisites
-- Python 3.5+
+- Python 3.6+
 - Python Virtual Environment (Optional)
 
 ### Steps to run
@@ -81,7 +81,7 @@ This is simple servless app which enables user to find his github rank. This gui
 
 1. Install all serverless dependencies `npm install`
 
-1. Update `ROCKSET_API_KEY` in `config.py`.
+1. Update `ROCKSET_APISERVER` and `ROCKSET_APIKEY` in `config.env`.
 
 1. Deploy code to AWS Lambda `sls deploy`. It should deploy the Python code to AWS Lambda and create a API Endpoints on it. You should see an output containing
     ```
