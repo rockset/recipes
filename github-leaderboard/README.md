@@ -20,6 +20,7 @@ cd recipes/github-leaderboard/
 python3 -m venv github-demo
 source github-demo/bin/activate
 pip install awscli rockset
+pip3 install python-dotenv
 ```
 3. Configure AWS CLI
 ```

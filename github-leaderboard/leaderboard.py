@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 CURRENT_DIR = path.dirname(os.path.abspath(__file__))
 
-load_dotenv(dotenv_path=os.path.join(CURRENT_DIR, 'config.env'))
+load_dotenv(dotenv_path=os.path.join(CURRENT_DIR, 'config.env'), override=True)
 
 client = Client(api_server=os.environ.get('ROCKSET_APISERVER'),
                 api_key=os.environ.get('ROCKSET_APIKEY'))
