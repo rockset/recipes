@@ -1,0 +1,23 @@
+service: binarysurvey
+provider:
+  name: aws
+  runtime: python3.6
+  region: us-west-2
+plugins:
+  - serverless-python-requirements
+custom:
+  pythonRequirements:
+    pythonBin: /usr/bin/python
+functions:
+  questions:
+    handler: handler.questions
+    events:
+    - http: GET questions
+  vote:
+    handler: handler.vote
+    events:
+    - http: POST vote
+  results:
+    handler: handler.results
+    events:
+    - http: GET results
