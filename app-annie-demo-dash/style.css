@@ -1,0 +1,59 @@
+div .content-header {
+  text-align: center;
+  background-color: #3d70b2;
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  color: #fff;
+}
+
+div.header {
+	text-align: center;
+}
+
+.top-header {
+  width: 100%;
+  overflow: hidden;
+}
+
+.month-select {
+	width: 100%;
+    margin-top: 20px;
+}
+
+.button {
+	width: 200px;
+}
+
+.main-content {
+    margin-left: 10px !important;
+}
+
+.content-body {
+	margin-top: 20px !important;
+	margin-bottom: 0px !important;
+	margin-right: 10px;
+	width: calc(50% - 10px);
+	text-align: center;
+	display: inline-block !important;
+	min-height: 150px !important;
+}
+
+li {
+	margin: 10px !important;
+	cursor: pointer;
+}
+
+ol {
+	margin-left: 0px !important;
+}
+
+.metric-number {
+	margin-top: 10px;
+	padding-top: 30px;
+    /*color: #3d70b2;*/
+    font-weight: 800;
+    font-size: 20px;
+    min-height: 60px !important;
+    border-top: 2px #3d70b2 solid;
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8">
+      <title>Rockset App Dashboard</title>
+      <link rel="stylesheet" href="style.css">
+      <link rel="stylesheet" href="https://unpkg.com/carbon-components@9.14.0/css/carbon-components.min.css">
+      <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+      <script  src="https://unpkg.com/carbon-components/scripts/carbon-components.min.js" type="text/javascript"></script>
+      <script src="index.js"></script>
+   </head>
+   <body>
+      <div class="top-header">
+         <div class="content-header">
+            <p>App Dashboard with Rockset</p>
+         </div>
+      </div>
+      <div class="bx--loading-overlay" hidden="true">
+         <div data-loading id="my-loading" class="bx--loading">
+           <svg class="bx--loading__svg" viewBox="-75 -75 150 150">
+             <title>Loading</title>
+             <circle cx="0" cy="0" r="37.5" />
+           </svg>
+         </div>
+      </div>
+      <div style="width: calc(35% - 30px); overflow: hidden; float:left; margin:15px;">
+         <div class="main-content bx--tile">
+            <div class="header">
+               <h3>Current Top Performing Apps</h3>
+            </div>
+            <div class="bx--form-item">
+              <div class="month-select bx--select">
+                <select  id="select-id" class="bx--select-input" onchange="updateMonth()">
+                      <option class="bx--select-option" value="2018-06">2018 - June</option>
+                      <option class="bx--select-option" value="2018-05">2018 - May</option>
+                      <option class="bx--select-option" value="2018-04">2018 - April</option>
+                      <option class="bx--select-option" value="2018-03">2018 - March</option>
+                      <option class="bx--select-option" value="2018-02">2018 - February</option>
+                      <option class="bx--select-option" value="2018-01">2018 - January</option>
+                      <option class="bx--select-option" value="2017-12">2017 - December</option>
+                      <option class="bx--select-option" value="2017-11">2017 - November</option>
+                      <option class="bx--select-option" value="2017-10">2017 - October</option>
+                      <option class="bx--select-option" value="2017-09">2017 - September</option>
+                      <option class="bx--select-option" value="2017-08">2017 - August</option>
+                      <option class="bx--select-option" value="2017-07">2017 - July</option>
+                      <option class="bx--select-option" value="2017-06">2017 - June</option>
+                      <option class="bx--select-option" value="2017-05">2017 - May</option>
+                      <option class="bx--select-option" value="2017-04">2017 - April</option>
+                      <option class="bx--select-option" value="2017-03">2017 - March</option>
+                      <option class="bx--select-option" value="2017-02">2017 - February</option>
+                      <option class="bx--select-option" value="2017-01">2017 - January</option>
+                </select>
+                <svg class="bx--select__arrow" width="10" height="5" viewBox="0 0 10 5">
+                  <path d="M0 0l5 4.998L10 0z" fill-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            <ol id="apps" class="bx--list--ordered">
+            </ol>
+            <div style="text-align: center">
+               <button class="bx--btn bx--btn--primary button"  type="button" onclick="reload()">Reload</button>
+            </div>
+         </div>
+         <div class="side-content"></div>
+      </div>
+
+      <div style="width: calc(65% - 15px); float:right; margin-right: 15px; margin-top: 15px;">
+         <div class="main-content">
+            <div class="header bx--tile" style="margin-right: 10px">
+               <h3 id="app-title"></h3>
+            </div>
+            <div id="metrics"></div>
+         </div>
+      </div>
+   </body>
+</html>
