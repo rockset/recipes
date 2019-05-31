@@ -12,8 +12,11 @@ streams = 'recentchange,page-links-change,page-create,page-move,page-properties-
 url = 'https://stream.wikimedia.org/v2/stream/{}'.format(streams)
 
 for event in EventSource(url):
-    if event.event == 'message':
-        change = json.loads(event.data)
+    try:
+        if event.event == 'message':
+            change = json.loads(event.data)
 
-        # add to rockset
-        events.add_docs([change])
+            # add to rockset
+            events.add_docs([change])
+    except:
+        continue

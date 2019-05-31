@@ -1,0 +1,2 @@
+rockset==0.5.30b20190523
+sseclient==0.0.22
