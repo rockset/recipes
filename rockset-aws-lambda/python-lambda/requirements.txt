@@ -16,13 +16,13 @@ requests==2.21.0
 requests-toolbelt==0.8.0
 rockset==0.5.9b20190104
 six==1.12.0
-SQLAlchemy==1.2.15
+SQLAlchemy==1.3.0
 sqlparse==0.2.4
 strict-rfc3339==0.7
 tabulate==0.8.2
 terminaltables==3.1.0
 texttable==1.5.0
-urllib3==1.24.1
+urllib3==1.24.2
 wcwidth==0.1.7
 webcolors==1.8.1
 Werkzeug==0.14.1
