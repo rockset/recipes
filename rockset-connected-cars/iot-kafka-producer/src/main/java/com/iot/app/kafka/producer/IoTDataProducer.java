@@ -107,11 +107,13 @@ class RockSetDataProducer extends IoTDataProducer implements Runnable {
 				double speed = rand.nextInt(100 - 20) + 20;// random speed between 20 to 100
 				double fuelLevel = rand.nextInt(40 - 10) + 10;
 				double tyrePressure = rand.nextInt(35-30) + 30; // random tyre pressure between 30 to 35
+				double suddenBraking = rand.nextInt(30-5) + 5; // random braking events between 5 to 30
+				double rapidAcceleration = rand.nextInt(30-5) + 5; // random rapid acceleration events between 5 to 30 
 				for (int j = 0; j < 5; j++) {// Add 5 events for each vehicle
 					String coords = getCoordinates(routeId);
 					String latitude = coords.substring(0, coords.indexOf(","));
 					String longitude = coords.substring(coords.indexOf(",") + 1, coords.length());
-					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed, fuelLevel, tyrePressure);
+					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed, fuelLevel, tyrePressure, suddenBraking, rapidAcceleration);
 					eventList.add(event);
 				}
 			}
