@@ -31,10 +31,11 @@ public class IoTDataProducer {
 
 	public static void main(String[] args) throws Exception {
 		// read config file
-		Properties prop = PropertyFileReader.readPropertyFile();		
-		String zookeeper = prop.getProperty("com.iot.app.kafka.zookeeper");
-		String brokerList = prop.getProperty("com.iot.app.kafka.brokerlist");
-		String topic = prop.getProperty("com.iot.app.kafka.topic");
+		// Properties prop = PropertyFileReader.readPropertyFile();
+		//reading properties from env variables		
+		String zookeeper = System.getenv("ZOOKEEPER_URL")+":"+System.getenv("ZOOKEEPER_PORT");
+		String brokerList = System.getenv("KAFKA_URL")+":"+System.getenv("KAFKA_PORT");
+		String topic = System.getenv("KAFKA_TOPICS");
 		logger.info("Using Zookeeper=" + zookeeper + " ,Broker-list=" + brokerList + " and topic " + topic);
 
 		// set producer properties
