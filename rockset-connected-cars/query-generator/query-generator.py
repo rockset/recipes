@@ -30,7 +30,11 @@ user_loadtime = args.totalTime
 # rockset query API
 def rocksetQueryMaker(query):
     # connect to Rockset
+<<<<<<< HEAD
     api_key = apiKey
+=======
+    api_key = "lql00adPzsFovbauxl3Gj1drN9vQyPizwZXdxpTncQtqJJi68FU948pbjLj6zsoI"
+>>>>>>> 722a85b250cb9aa9f24e7030dfcdbcb7dade5c47
     rs = Client(api_key=api_key)
     print("query is "+query)
     if query=="query1":
