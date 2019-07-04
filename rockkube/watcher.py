@@ -4,7 +4,7 @@ import rockset
 import os
 import argparse
 
-# Before watching events, define constants and connect to the rockset client
+# Before watching events, connect to the rockset client
 ROCKSET_API_KEY = os.environ['ROCKSET_API_KEY'] # replace with your API key here
 COLLECTION_NAME = 'kubernetes_events'
 rs = rockset.Client(api_key=ROCKSET_API_KEY)
