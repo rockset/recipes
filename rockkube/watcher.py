@@ -61,6 +61,7 @@ def batch_upload_events(max_failures):
                 # try a timed backoff on uploading events 
                 time.sleep(num_tries * backoff_factor)
                 collection.add_docs(event_docs)
+                break
             except Exception:
                 num_tries += 1
         if num_tries == max_failures:
