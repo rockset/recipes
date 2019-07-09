@@ -6,17 +6,10 @@ import argparse
 
 # Before watching events, connect to the rockset client
 ROCKSET_API_KEY = os.environ['ROCKSET_API_KEY'] # replace with your API key here
-COLLECTION_NAME = 'kubernetes_events'
-POD_COLLECTION_NAME = 'kubernetes_pods'
 rs = rockset.Client(api_key=ROCKSET_API_KEY)
 
-# Fetch collection called kubernetes_events. If it does not exist, create it
-try:
-    collection = rs.Collection.retrieve(COLLECTION_NAME)
-    pod_collection = rs.Collection.retrieve(POD_COLLECTION_NAME)
-except rockset.exception.InputError as e:
-    pod_collection = rs.Collection.create(POD_COLLECTION_NAME)
-    collection = rs.Collection.create(COLLECTION_NAME)
+resource_to_collection = {}
+resource_to_function = {}
 
 # Configs can be set in Configuration class directly or using helper utility
 # Here, we are loading it from the default location
@@ -25,6 +18,14 @@ config.load_kube_config()
 # create kubernetes API instance
 v1 = client.CoreV1Api()
 v1ext = client.ExtensionsV1beta1Api()
+
+# initalize resource to function dict for resource info retrieval. 
+resource_to_function['Pod'] = v1.read_namespaced_pod
+resource_to_function['Deployment'] = v1ext.read_namespaced_deployment
+resource_to_function['Service'] = v1.read_namespaced_service
+resource_to_function['ReplicaSet'] = v1ext.read_namespaced_replica_set
+resource_to_function['DaemonSet'] = v1ext.read_namespaced_daemon_set
+resource_to_function['Endpoints'] = v1.read_namespaced_endpoints
 
 
 def generate_event_info(event, watch):
@@ -37,6 +38,17 @@ def generate_event_info(event, watch):
         event_info = event.to_dict()
     return event_info
 
+
+def add_docs_to_rockset(collection_prefix, docs):
+    collection_name = 'kubernetes_' + collection_prefix.lower() + 's'
+    if collection_name not in resource_to_collection:
+        # Fetch collection called kubernetes_events. If it does not exist, create it
+        try:
+            resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
+        except Exception as e:
+            resource_to_collection[collection_name] = rs.Collection.create(collection_name)
+    print("collection name is", collection_name)
+    resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
 # We batch these into several groups with max size limit_size
@@ -55,26 +67,34 @@ def batch_upload_events():
         for event in events.items:
             event_info = generate_event_info(event, False)
             event_docs.append(event_info)
-            add_pod_info_to_collection(event_info)
-        collection.add_docs(event_docs)
+            add_resource_info_to_collection(event_info)
+        add_docs_to_rockset('Event', event_docs)
         if not continue_tok:
             break
     return resource_version
 
-def add_pod_info_to_collection(event_info):
+def add_resource_info_to_collection(event_info):
     if "involved_object" in event_info:
         obj = event_info["involved_object"]
     else:
         obj = event_info["object"].to_dict()
-    if obj["kind"] == 'Pod':
-        namespace = obj["namespace"]
-        name = obj["name"]
-        try:
-            pod_info = v1.read_namespaced_pod(namespace=namespace, name=name).to_dict()
-            pod_collection.add_docs([pod_info])
-        # TODO: there is a 404 error here where the pod is sometimes not found 
-        except Exception:
-            pass
+    if "namespace" not in obj or "name" not in obj:
+        return
+    namespace = obj["namespace"]
+    name = obj["name"]
+    try:
+        resource_type = obj["kind"]
+        # We only care about retreiving a specific subset 
+        # of resource types
+        if resource_type not in resource_to_function:
+            return
+        get_function = resource_to_function[resource_type]
+        resource_info = get_function(namespace=namespace, name=name).to_dict()
+        add_docs_to_rockset(resource_type, [resource_info])
+    # There is a 404 error here where the pod is sometimes not found
+    # we ignore this error as it happens with enough frequency not to warrant failover
+    except Exception as e:
+        pass
 
 # Create a watcher around the stream, and then
 # for each event, process the data from the event
@@ -87,13 +107,13 @@ def watch_events(max_failures):
     # Here, resource version allows us to not fetch a large batch of events
     for event in w.stream(v1.list_event_for_all_namespaces, resource_version=resource_version):
         event_info = generate_event_info(event, True)
-        add_pod_info_to_collection(event_info)
+        add_resource_info_to_collection(event_info)
         doc_buffer.append(event_info)
         # try to add all pending docs to the rockset collection
         # if we are successful, we can flush the buffer and reset fail count
         try:
             # TODO: save resource version here so we don't duplicate updates - need to be careful about this when we re-start
-            rs_info = collection.add_docs(doc_buffer)
+            add_docs_to_rockset('Event', doc_buffer)
             doc_buffer = []
             consecutive_failures = 0
         # For some reason, the rockset client failed, so we 
