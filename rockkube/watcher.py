@@ -47,7 +47,6 @@ def add_docs_to_rockset(collection_prefix, docs):
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
             resource_to_collection[collection_name] = rs.Collection.create(collection_name)
-    print("collection name is", collection_name)
     resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
@@ -73,6 +72,8 @@ def batch_upload_events():
             break
     return resource_version
 
+# Get information about an associated resource for an event
+# and upload to respective rockset collection
 def add_resource_info_to_collection(event_info):
     if "involved_object" in event_info:
         obj = event_info["involved_object"]
