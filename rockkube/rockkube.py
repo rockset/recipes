@@ -146,6 +146,6 @@ def watch_events(max_failures):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("max_failures", nargs='?', default=25)
+    parser.add_argument("max_failures", nargs='?', default=10)
     args = parser.parse_args()
     watch_events(args.max_failures)
