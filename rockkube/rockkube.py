@@ -47,7 +47,8 @@ def add_docs_to_rockset(collection_prefix, docs):
         try:
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
-            resource_to_collection[collection_name] = rs.Collection.create(collection_name)
+            thirty_days = 30*24*60*60
+            resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=thirty_days)
     resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
