@@ -1,10 +1,10 @@
-# This script should run in the background (python3 rockkube &). It watches your kubernetes events, 
+# This script should run in the background (python3 rockkube.py &). It watches your kubernetes events,
 # and then deposits all events and associated resources into a set of rockset collections 
 # These collections are prefixed with rockkube_*” followed by "events" or the name of the resource.
 # You can make SQL queries by using the rockset api documented at https://docs.rockset.com or 
 # https://console.rockset.com. You can also set the colletion retention by changing 
 # the THIRTY_DAYS variable to a different amount. You can also set the max failures before
-# giving up the script as a command line argument. (python3 rockkube -max_failures=5)
+# giving up the script as a command line argument. (python3 rockkube.py -max_failures=5)
 from kubernetes import client, config, watch
 import rockset
 import os
@@ -19,7 +19,6 @@ except KeyError:
 https://www.rockset.com and signing up for a rockset account\n\n""")
 rs = rockset.Client(api_key=ROCKSET_API_KEY)
 
-# constant definition
 THIRTY_DAYS = 30*24*60*60
 
 resource_to_collection = {}
@@ -160,4 +159,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-max_failures", nargs='?', default=10)
     args = parser.parse_args()
-    watch_events(args.max_failures)
+    watch_events(int(args.max_failures))
