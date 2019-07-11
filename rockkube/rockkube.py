@@ -1,13 +1,26 @@
+# This script should run in the background (python3 rockkube &). It watches your kubernetes events, 
+# and then deposits all events and associated resources into a set of rockset collections 
+# These collections are prefixed with rockkube_*” followed by "events" or the name of the resource.
+# You can make SQL queries by using the rockset api documented at https://docs.rockset.com or 
+# https://console.rockset.com. You can also set the colletion retention by changing 
+# the THIRTY_DAYS variable to a different amount. You can also set the max failures before
+# giving up the script as a command line argument. (python3 rockkube -max_failures=5)
 from kubernetes import client, config, watch
-import threading
 import rockset
 import os
 import argparse
 import time
 
 # Before watching events, connect to the rockset client
-ROCKSET_API_KEY = os.environ['ROCKSET_API_KEY'] # replace with your API key here
+try:
+    ROCKSET_API_KEY = os.environ['ROCKSET_API_KEY'] # replace with your API key here
+except KeyError:
+    print("""\n\nROCKSET_API_KEY is not defined. You can get an api key by visiting
+https://www.rockset.com and signing up for a rockset account\n\n""")
 rs = rockset.Client(api_key=ROCKSET_API_KEY)
+
+# constant definition
+THIRTY_DAYS = 30*24*60*60
 
 resource_to_collection = {}
 resource_to_function = {}
@@ -47,8 +60,7 @@ def add_docs_to_rockset(collection_prefix, docs):
         try:
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
-            thirty_days = 30*24*60*60
-            resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=thirty_days)
+            resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=THIRTY_DAYS)
     resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
@@ -146,6 +158,6 @@ def watch_events(max_failures):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("max_failures", nargs='?', default=10)
+    parser.add_argument("-max_failures", nargs='?', default=10)
     args = parser.parse_args()
     watch_events(args.max_failures)
