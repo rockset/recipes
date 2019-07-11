@@ -17,6 +17,7 @@ try:
 except KeyError:
     print("""\n\nROCKSET_API_KEY is not defined. You can get an api key by visiting
 https://www.rockset.com and signing up for a rockset account\n\n""")
+    exit()
 rs = rockset.Client(api_key=ROCKSET_API_KEY)
 
 THIRTY_DAYS = 30*24*60*60
@@ -54,17 +55,15 @@ def generate_event_info(event, watch):
 
 def add_docs_to_rockset(collection_prefix, docs):
     collection_name = 'rockkube_' + collection_prefix.lower() + 's'
-    collection_created = True
     if collection_name not in resource_to_collection:
         # Fetch collection. If it does not exist, create it
         try:
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
-            collection_created = False
             resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=THIRTY_DAYS)
-    # Wait for the collection to be created before uploading, or we get a 503
-    if not collection_created:
-        time.sleep(5)
+            # Wait for the collection to be created before uploading, or we get a 503
+            print("Creating collection {}".format(collection_name))
+            time.sleep(5)
     resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
@@ -73,6 +72,7 @@ def add_docs_to_rockset(collection_prefix, docs):
 # our watcher does not return events. This prevents us from getting 
 # duplicates when we stream the events for all namespaces
 def batch_upload_events(max_failures):
+    print("Starting batch upload of events")
     resource_version = 0
     continue_tok = ''
     while True:
@@ -101,6 +101,7 @@ def batch_upload_events(max_failures):
             raise Exception("Uploading events to Rockset failed {} times in a row. Please try agian later".format(num_tries))
         if not continue_tok:
             break
+    print("Finished batch upload of events")
     return resource_version
 
 # Get information about an associated resource for an event
@@ -137,6 +138,7 @@ def watch_events(max_failures):
     doc_buffer = []
     consecutive_failures = 0
     # Here, resource version allows us to not fetch a large batch of events
+    print("Watching k8s events in all namespaces")
     for event in w.stream(v1.list_event_for_all_namespaces, resource_version=resource_version):
         event_info = generate_event_info(event, True)
         add_resource_info_to_collection(event_info)
