@@ -1,6 +1,6 @@
 ## Introduction
 
-rockkube is an utility that watches for config changes in your kubernetes cluster and inserts them into your Rockset collections. And then you can immeditely make SQL queries on that data by via a webUI at  https://console.rockset.com/login or via a command line interface at https://docs.rockset.com/rockset-cli/.
+rockkube is an utility that watches for config changes in your kubernetes cluster and inserts them into your Rockset collections. And then you can immeditely make SQL queries on that data via a webUI at  https://console.rockset.com/login or via a command line interface at https://docs.rockset.com/rockset-cli/.
 
 ## Setup
 `$ pip3 install -r requirements.txt`
