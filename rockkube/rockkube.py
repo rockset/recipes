@@ -61,7 +61,7 @@ def add_docs_to_rockset(collection_prefix, docs):
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
             resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=THIRTY_DAYS)
-            # Wait for the collection to be created before uploading, or we get a 503
+            # Wait for the collection to finish being created before uploading, or we get an error 503 because it's not ready
             print("Creating collection {}".format(collection_name))
             time.sleep(5)
     resource_to_collection[collection_name].add_docs(docs)
