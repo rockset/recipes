@@ -4,7 +4,7 @@
 Make sure you have the Rockset API key as an
 enviornment variable
 
-`export ROCKSET_API_KEY='my_api_key'`
+`$ export ROCKSET_API_KEY='my_api_key'`
 
 ## Running rockkube
 `python3 rockkube.py`
