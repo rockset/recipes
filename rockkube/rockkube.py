@@ -54,12 +54,17 @@ def generate_event_info(event, watch):
 
 def add_docs_to_rockset(collection_prefix, docs):
     collection_name = 'rockkube_' + collection_prefix.lower() + 's'
+    collection_created = True
     if collection_name not in resource_to_collection:
         # Fetch collection. If it does not exist, create it
         try:
             resource_to_collection[collection_name] = rs.Collection.retrieve(collection_name)
         except Exception as e:
+            collection_created = False
             resource_to_collection[collection_name] = rs.Collection.create(collection_name, retention_secs=THIRTY_DAYS)
+    # Wait for the collection to be created before uploading, or we get a 503
+    if not collection_created:
+        time.sleep(5)
     resource_to_collection[collection_name].add_docs(docs)
 
 # Because we get a large number of events at the start of watching 
