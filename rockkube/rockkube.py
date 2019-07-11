@@ -85,7 +85,6 @@ def batch_upload_events(max_failures):
             event_info = generate_event_info(event, False)
             event_docs.append(event_info)
             add_resource_info_to_collection(event_info)
-        add_docs_to_rockset('Event', event_docs)
         # scaled backoff for uploading to rockset
         num_tries = 0
         backoff_factor = 5
