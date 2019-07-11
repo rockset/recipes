@@ -1,0 +1,2 @@
+kubernetes==9.0.0
+rockset==0.6.0b20190617
