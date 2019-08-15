@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Should I Park Here?</title>
+  <style>
+    html, body {
+      background-color: #222;
+      font-family: sans-serif;
+      margin: 0;
+    }
+
+    #wrapper {
+      width: 100%;
+      height: 90vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    #title {
+      font-weight: 700;
+      font-size: 32px;
+      color: white;
+      margin: 3vh 0;
+      box-sizing: border-box;
+    }
+
+    #tile {
+      flex: 1;
+      background-color: #ddd;
+      border-radius: 8px;
+      box-sizing: border-box;
+      padding: 20px 40px;
+      width: 90vw;
+      max-width: 600px;
+      max-height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+      overflow: scroll;
+    }
+
+    .message {
+      font-size: 18px;
+      box-sizing: border-box;
+      display: none;
+    }
+    
+    .message#intro {
+      display: block;
+    }
+
+    #location-button {
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0.05, #7892c2), color-stop(1, #476e9e));
+      background: -moz-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+      background: -webkit-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+      background: -o-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+      background: -ms-linear-gradient(top, #7892c2 5%, #476e9e 100%);
+      background: linear-gradient(to bottom, #7892c2 5%, #476e9e 100%);
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#7892c2', endColorstr='#476e9e', GradientType=0);
+      background-color: #7892c2;
+      text-shadow: 0px 1px 0px #283966;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+      padding: 40px;
+      border-radius: 8px;
+      outline: none;
+      border: none;
+    }
+    
+    #verdict {
+      font-size: 28px;
+      font-weight: 700;
+      color: green;
+    }
+
+    #credits {
+      text-align: center;
+      line-height: 24px;
+      padding-bottom: 24px;
+    }
+
+    #credits a {
+      color: white;        
+    }
+  </style>
+  <script type="text/javascript">
+    function getLocation() {
+      document.getElementById("location-button").style.display = "none";
+      showMessage("fetching");
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(handleLocation, function (error) {
+          showMessage("denied")
+        });
+      } else {
+        showMessage("unsupported")
+      }
+    }
+
+    function handleLocation(position) {
+      showMessage("querying");
+      var lat = position.coords.latitude;
+      var lon = position.coords.longitude;
+      fetch(
+        'https://aj8wl2pz30.execute-api.us-west-2.amazonaws.com/default/sf-parking?lat=' + lat + '&lon=' + lon,
+        { method: 'POST' }
+      ).then(function (response) {
+        return response.json();
+      }).then(function (result) {
+        setResult(result['results'][0]);
+        showMessage("result");
+        document.getElementById("tile").style.justifyContent = "start";
+      });
+    }
+    
+    function setResult(result) {
+      document.getElementById('score').textContent = (5*parseFloat(result['Risk Score'])).toFixed(2);
+      document.getElementById('percentile').textContent = (100-parseFloat(result['Percentile'])).toFixed(1);
+      // if (result['Percentile'] == 0) {
+        // document.getElementById('more').textContent = "If you're currently outside SF, this means it is unlikely for anyone from SF to come all the way here to break in to your car :P";
+      // } else {
+        document.getElementById('more').textContent = result['Closest Incident']
+      // }
+      
+      if (result['Percentile'] < 30) {
+        document.getElementById('verdict').textContent = 'SAFE';
+      } else if (result['Percentile'] < 70) {
+        document.getElementById('verdict').textContent = 'NORMAL';
+      } else if (result['Percentile'] < 90) {
+        document.getElementById('verdict').textContent = 'ELEVATED';
+        document.getElementById('verdict').style.color = '#cc7000'
+      } else {
+        document.getElementById('verdict').textContent = "DICEY";
+        document.getElementById('verdict').style.color = '#f10000';
+      }
+    }
+
+    function showMessage(messageId) {
+      var messages = document.getElementsByClassName("message");
+      for (var i = 0; i < messages.length; i++) {
+        messages[i].style.display = "none";
+      }
+      document.getElementById(messageId).style.display = "block";
+    }
+  </script>
+</head>
+<body>
+  <div id="wrapper">
+    <div id="title">should I park here?</div>
+    <div id="tile">
+      <div id="intro" class="message"><b>Parking in SF?</b><br><br>Check the risk of your car being broken into. Estimation based on all break-ins in past year.<br><br><br></div>
+      <button id="location-button" onclick="getLocation()">detect location</button>
+      <div id="fetching" class="message">hold on, getting your location...</div>
+      <div id="querying" class="message">just a sec, querying incident records...</div>
+      <div id="denied" class="message">I got denied :( you are on your own!</div>
+      <div id="unsupported" class="message">geolocation not supported by this browser :(</div>
+      <div id="result" class="message result">
+        <b>THREAT LEVEL</b>
+        <br>
+        <span id="verdict"></span>
+        <br>
+        <br>
+        Risk score here is <b><span id="score"></span></span></b>.
+        <br>
+        <br>
+        Safer than <b><span id="percentile"></span>%</b> of spots across SF.
+        <br>
+        <br>
+        <span id="more"></span>
+        <br>
+        <br>
+        Read more about the methodology <a href="https://rockset.com/blog">here</a>.
+      </div>
+    </div>
+    <div id="credits">
+      <br>
+      <a href="https://data.sfgov.org/Public-Safety/Police-Department-Incident-Reports-2018-to-Present/wg3w-h783">Data from SFPD</a>
+      <br>
+      <a href="https://rockset.com">Powered by Rockset</a>
+    </div>
+  <div>
+</body>
+</html>
