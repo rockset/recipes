@@ -130,6 +130,7 @@ def lambda_handler(event, context):
             'body': json.dumps(res),
             'headers': {
                 'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
             }
         }
     else:
