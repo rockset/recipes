@@ -122,7 +122,7 @@
     function setResult(result) {
       document.getElementById('score').textContent = (5*parseFloat(result['Risk Score'])).toFixed(2);
       document.getElementById('percentile').textContent = (100-parseFloat(result['Percentile'])).toFixed(1);
-      if (result['Percentile'] == 0) {
+      if (result['Percentile'] < 0.01) {
         document.getElementById('more').textContent = "If you're currently outside SF, this means it is unlikely for anyone from SF to come all the way here to break in to your car :P";
       } else {
         document.getElementById('more').textContent = result['Closest Incident']
