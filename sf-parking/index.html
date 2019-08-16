@@ -122,11 +122,11 @@
     function setResult(result) {
       document.getElementById('score').textContent = (5*parseFloat(result['Risk Score'])).toFixed(2);
       document.getElementById('percentile').textContent = (100-parseFloat(result['Percentile'])).toFixed(1);
-      // if (result['Percentile'] == 0) {
-        // document.getElementById('more').textContent = "If you're currently outside SF, this means it is unlikely for anyone from SF to come all the way here to break in to your car :P";
-      // } else {
+      if (result['Percentile'] == 0) {
+        document.getElementById('more').textContent = "If you're currently outside SF, this means it is unlikely for anyone from SF to come all the way here to break in to your car :P";
+      } else {
         document.getElementById('more').textContent = result['Closest Incident']
-      // }
+      }
       
       if (result['Percentile'] < 30) {
         document.getElementById('verdict').textContent = 'SAFE';
@@ -148,15 +148,6 @@
       }
       document.getElementById(messageId).style.display = "block";
     }
-  </script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-127778659-1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-127778659-1');
   </script>
 </head>
 <body>
@@ -184,7 +175,7 @@
         <span id="more"></span>
         <br>
         <br>
-        Read more about the methodology <a href="https://rockset.com/blog">here</a>.
+        Read: <a href="https://rockset.com/blog/data-driven-decisions-realtime-parking-risk-score/">methodology</a> and <a href="https://github.com/rockset/recipes/tree/master/sf-parking">source code</a>.
       </div>
     </div>
     <div id="credits">
