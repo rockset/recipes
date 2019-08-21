@@ -3,6 +3,16 @@ import { Table, TableHead, TableRow, TableCell, TableBody } from '@material-ui/c
 
 
 export default class EventsTable extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rangeStart: 0,
+      rangeEnd: 10
+    }
+  }
+  updateEventRange(e) {
+    
+  }
     render() {
         const {events} = this.props;
         return (
@@ -16,12 +26,12 @@ export default class EventsTable extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {events.map(event => (
-                <TableRow key={event.lastTimestamp}>
-                  <TableCell align="left">{event.event.lastTimestamp}</TableCell>
+              {events.map((event, idx) => (
+                <TableRow key={idx}>
+                  <TableCell align="left">{event.lastTimestamp}</TableCell>
                   <TableCell align="left">{event.verb}</TableCell>
-                  <TableCell align="left">{event.event.reason}</TableCell>
-                  <TableCell align="left">{event.event.message}</TableCell>
+                  <TableCell align="left">{event.reason}</TableCell>
+                  <TableCell align="left">{event.message}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
