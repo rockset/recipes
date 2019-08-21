@@ -30,7 +30,7 @@ export default class Graph extends React.Component {
                     newObject = false;
                     data[i]['data'].push({
                         "x": Date.parse(event['lastTimestamp']),
-                        "y": i,
+                        "y": name,
                         "message": event['message']
                     })
                 }
@@ -43,7 +43,7 @@ export default class Graph extends React.Component {
                     "data": [
                       {
                         "x": Date.parse(event['lastTimestamp']),
-                        "y": i,
+                        "y": name,
                         "message": event['message']
                       },
                     ]
@@ -67,7 +67,7 @@ export default class Graph extends React.Component {
     render() {
         const data = this.constructData()
         return (
-            <div style={{"width": '100vw', "height": '100vh'}}>
+            <div style={{"width": '66vw', "height": '66vh'}}>
                 <Modal open={this.state.open} onClose={this.handleClose}>
                 <div style={
                     {
@@ -86,7 +86,7 @@ export default class Graph extends React.Component {
                 data={data}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                 xScale={{ type: 'point' }}
-                yScale={{ type: 'linear', stacked: false, min: 'auto', max: 'auto' }}
+                yScale={{ type: 'point', stacked: false, min: 'auto', max: 'auto' }}
                 axisTop={null}
                 axisRight={null}
                 axisBottom={{
@@ -100,12 +100,10 @@ export default class Graph extends React.Component {
                 }}
                 axisLeft={{
                     orient: 'left',
-                    tickSize: 5,
+                    tickSize: 0,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'count',
-                    legendOffset: -40,
-                    legendPosition: 'middle'
+                    format: () => null
                 }}
                 colors={{ scheme: 'nivo' }}
                 pointSize={10}
@@ -121,11 +119,11 @@ export default class Graph extends React.Component {
                         anchor: 'bottom-right',
                         direction: 'column',
                         justify: false,
-                        translateX: 100,
+                        translateX: 150,
                         translateY: 0,
                         itemsSpacing: 0,
                         itemDirection: 'left-to-right',
-                        itemWidth: 80,
+                        itemWidth: 135,
                         itemHeight: 20,
                         itemOpacity: 0.75,
                         symbolSize: 12,
