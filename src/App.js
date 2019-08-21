@@ -3,9 +3,10 @@ import React from 'react';
 import './App.css';
 import { Select, MenuItem, Typography, TextField} from '@material-ui/core';
 import Graph from './Graph';
+import _ from 'lodash';
 
 const RESOURCE_TYPES = ["Pod", "Node"];
-const TIME_MAPPING = {"Past 2 hours": 2, "Past 6 hours": 6, "Past day": 24, "Past week": 168};
+const TIME_MAPPING = {"Past 1 hour": 1, "Past 6 hours": 6, "Past day": 24, "Past week": 168};
 
 function timeAtHoursBefore(hours) {
   const date = new Date();
@@ -22,13 +23,17 @@ class App extends React.Component {
       events: [],
       resource: RESOURCE_TYPES[0],
       timeRangeString: Object.keys(TIME_MAPPING)[0],
-      timeStart: timeAtHoursBefore(2),
+      timeStart: timeAtHoursBefore(1),
       timeEnd: (new Date()).getTime(),
       prefix: '',
     }
     this.changeResource = this.changeResource.bind(this);
     this.changeTimeRange = this.changeTimeRange.bind(this);
     this.changePrefix = this.changePrefix.bind(this);
+    this.queryEvents = this.queryEvents.bind(this);
+    this.debounce = _.debounce(function() {
+      this.getEvents();
+    }, 1000);
   }
 
 
@@ -42,7 +47,7 @@ class App extends React.Component {
                   WHERE e.event.involvedObject.kind = '${this.state.resource}'
                   AND UNIX_MILLIS(e._event_time) > ${this.state.timeStart}
                   AND e.event.involvedObject.name LIKE '${this.state.prefix}%'
-                  LIMIT 10
+                  LIMIT 25
         `
       }
     }
@@ -60,16 +65,21 @@ class App extends React.Component {
 
   }
 
+  queryEvents() {
+    this.debounce.cancel();
+    this.debounce();
+  }
+
   componentDidMount() {
     this.getEvents();
   }
 
   changeResource(e) {
-    this.setState({ resource: e.target.value }, ()=>{this.getEvents()});
+    this.setState({ resource: e.target.value }, ()=>{this.queryEvents()});
   }
 
   changePrefix(e) {
-    this.setState({ prefix: e.target.value}, ()=>{this.getEvents()});
+    this.setState({ prefix: e.target.value}, ()=>{this.queryEvents()});
   }
 
   changeTimeRange(e) {
@@ -86,17 +96,19 @@ class App extends React.Component {
         <header>
           <div style={{"textAlign": "center"}}>
             <Typography variant="h2" component="h2">
-              Kubernetes Events Visualization
+              Events Visualization
             </Typography>
           </div>
+          <div style={{"paddingBottom": '30px'}}>
           <Typography variant="h4" component="h4">
-            Type
+            Resource Type
           </Typography>
-          <Select value={resource} onChange={this.changeResource}>
-            {RESOURCE_TYPES.map((val)=> (
-              <MenuItem key={val} value={val}>{val}</MenuItem>
-            ))}
-          </Select>
+            <Select value={resource} onChange={this.changeResource}>
+              {RESOURCE_TYPES.map((val)=> (
+                <MenuItem key={val} value={val}>{val}</MenuItem>
+              ))}
+            </Select>
+          </div>
           <Typography variant="h4" component="h4">
             Filter by prefix
           </Typography>
@@ -106,17 +118,13 @@ class App extends React.Component {
             variant="outlined"
             onChange={this.changePrefix}
             />
-          <Typography variant="h4" component="h4">
-            Time Range
-          </Typography>
-          <Select value={timeRangeString} onChange={this.changeTimeRange}>
-            {Object.keys(TIME_MAPPING).map((val)=> (
-              <MenuItem key={val} value={val}>{val}</MenuItem>
-            ))}
-          </Select>
-          <Typography variant="h4" component="h4">
-            Visualization
-          </Typography>
+          <div style={{'position': 'absolute', 'right': '20%'}}>
+            <Select value={timeRangeString} onChange={this.changeTimeRange}>
+              {Object.keys(TIME_MAPPING).map((val)=> (
+                <MenuItem key={val} value={val}>{val}</MenuItem>
+              ))}
+            </Select>
+          </div>
         </header>
         <div style={{width: '100%', height: '100vh'}}>
         <Graph timeStart={timeStart} timeEnd={timeEnd} events={events}/>

@@ -2,6 +2,7 @@ import React from 'react';
 import './Graph.css';
 import { ResponsiveLine } from '@nivo/line'
 import {Modal} from '@material-ui/core'
+import moment from 'moment';
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
@@ -29,7 +30,7 @@ export default class Graph extends React.Component {
                 if (data[i]['id'] === name) {
                     newObject = false;
                     data[i]['data'].push({
-                        "x": Date.parse(event['lastTimestamp']),
+                        "x": (Date.parse(event['lastTimestamp'])),
                         "y": name,
                         "message": event['message']
                     })
@@ -42,7 +43,7 @@ export default class Graph extends React.Component {
                     "color": `hsl(${getRandomInt(302)}, 70%, 50%)`,
                     "data": [
                       {
-                        "x": Date.parse(event['lastTimestamp']),
+                        "x": (Date.parse(event['lastTimestamp'])),
                         "y": name,
                         "message": event['message']
                       },
@@ -51,7 +52,6 @@ export default class Graph extends React.Component {
                 data.push(newObj)
             }
         }
-        console.log("data is", data)
         return data;
     }
 
@@ -67,7 +67,7 @@ export default class Graph extends React.Component {
     render() {
         const data = this.constructData()
         return (
-            <div style={{"width": '66vw', "height": '66vh'}}>
+            <div style={{"width": '75vw', "height": '75vh'}}>
                 <Modal open={this.state.open} onClose={this.handleClose}>
                 <div style={
                     {
@@ -75,7 +75,7 @@ export default class Graph extends React.Component {
                         left: "50%", 
                         transform: 'translate(-50%, -50%)', 
                         position: 'absolute',
-                        width: '400',
+                        width: '400px',
                         backgroundColor: 'white',
                         }
                     }>
@@ -85,7 +85,7 @@ export default class Graph extends React.Component {
                 <ResponsiveLine
                 data={data}
                 margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
-                xScale={{ type: 'point' }}
+                xScale={{ type: 'linear', min: this.props.timeStart, max: this.props.timeEnd }}
                 yScale={{ type: 'point', stacked: false, min: 'auto', max: 'auto' }}
                 axisTop={null}
                 axisRight={null}
@@ -96,7 +96,8 @@ export default class Graph extends React.Component {
                     tickRotation: 0,
                     legend: 'Time',
                     legendOffset: 36,
-                    legendPosition: 'middle'
+                    legendPosition: 'middle',
+                    format: value => moment.unix(value/1000).format('hh:mm:ss'),
                 }}
                 axisLeft={{
                     orient: 'left',
