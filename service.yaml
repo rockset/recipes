@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: eventrouter-viz
+  name: eventrouter-viz
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: eventrouter-viz
+  sessionAffinity: None
+  type: NodePort

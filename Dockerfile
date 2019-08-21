@@ -1,16 +1,21 @@
-# base image
-FROM node:12.2.0-alpine
+FROM node:alpine
+WORKDIR '/app'
+COPY package.json .
 
-# set working directory
-WORKDIR /app
+# Copy all local files into the image.
+COPY . .
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+RUN npm install
+RUN npm audit fix
 
-# install and cache app dependencies
-COPY package.json /app/package.json
-RUN npm install --silent
-RUN npm install react-scripts@3.0.1 -g --silent
+# Build for production.
+RUN npm run build --production
 
-# start app
-CMD ["npm", "start"]
+# Install `serve` to run the application.
+RUN npm install -g serve
+
+# Set the command to start the node server.
+CMD serve -s build
+
+# Tell Docker about the port we'll run on.
+EXPOSE 8080

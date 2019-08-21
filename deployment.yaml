@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventrouter-viz
+  namespace: raguiar
+  labels:
+    app: eventrouter-viz
+spec:
+  selector:
+    matchLabels:
+      app: eventrouter-viz
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: eventrouter-viz
+        tier: web
+    spec:
+      containers:
+      - name: eventrouter-viz
+        image: rockset/eventrouter_viz:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "1Gi"
+          requests:
+            memory: "200Mi"
+      imagePullSecrets:
+      - name: registry
+      tolerations:
+      - key: "role"
+        operator: "Equal"
+        value: "generic"
+        effect: "NoSchedule"
+
+
