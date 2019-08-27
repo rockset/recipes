@@ -1,0 +1,8 @@
+.ListItem {
+    color: gainsboro;
+}
+
+.ListItem:hover {
+    background-color: #61dafb;
+    cursor: pointer;
+}
