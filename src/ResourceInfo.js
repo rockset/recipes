@@ -8,6 +8,7 @@ import {
   } from "@material-ui/core";
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import EventsTable from './EventsTable';
+import TimeLine from './TimeLine';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { SquareLoader } from "react-spinners";
@@ -50,12 +51,6 @@ class ResourceInfo extends React.Component {
           "ApiKey " + process.env.REACT_APP_ROCKSET_API_KEY
         }
       };
-      console.log("query is", `SELECT e.event.involvedObject.name, e.verb, e.event.reason, e.event.message, e.event.lastTimestamp FROM commons.eventrouter_events e
-      WHERE e.event.involvedObject.name = '${this.state.resourceName}'
-      AND UNIX_MILLIS(PARSE_TIMESTAMP_ISO8601(eventrouter_events.event.lastTimestamp)) > ${this.state.timeStart}
-      AND UNIX_MILLIS(PARSE_TIMESTAMP_ISO8601(eventrouter_events.event.lastTimestamp)) < ${this.state.timeEnd}
-      ORDER BY UNIX_MILLIS(e._event_time) DESC
-`)
       const body = {
         sql: {
           query: `SELECT e.event.involvedObject.name, e.verb, e.event.reason, e.event.message, e.event.lastTimestamp FROM commons.eventrouter_events e
@@ -100,7 +95,7 @@ class ResourceInfo extends React.Component {
 
 
   render() {
-    const {resourceName, timeStart, timeEnd} = this.state;
+    const {resourceName, timeStart, timeEnd, events} = this.state;
     const startStr = this.dateToSelectorString(timeStart);
     const endStr = this.dateToSelectorString(timeEnd);
     return (
@@ -140,7 +135,20 @@ class ResourceInfo extends React.Component {
               <SquareLoader size={150} color={"#3f51b5"}/>
             </div>
            : 
-           <EventsTable events={this.state.events}/>
+           <div>
+             {events.length === 0 ? 
+             <Typography variant="h6"> No events in this time range for the resource. Try selecting a different timeline. </Typography>
+             :
+             <div>
+             <div style={{"overflow": "scroll", "maxHeight": "400px", "backgroundColor": "lightgray"}}>
+              <Typography variant="h6"> Timeline </Typography>
+              <TimeLine events={this.state.events}/>
+             </div>
+              <Typography variant="h6"> Table of Events </Typography>
+              <EventsTable events={this.state.events}/>
+              </div>
+            }
+             </div>
           }
         </div>
       </div>
