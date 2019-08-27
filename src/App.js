@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import './App.css';
-import { Select, MenuItem, Typography, TextField} from '@material-ui/core';
+import { Select, MenuItem, Typography, TextField, AppBar, Toolbar} from '@material-ui/core';
 import Graph from './Graph';
 import _ from 'lodash';
 
@@ -95,9 +95,17 @@ class App extends React.Component {
       <div style={{"marginLeft": '3%'}}>
         <header>
           <div style={{"textAlign": "center"}}>
-            <Typography variant="h2" component="h2">
-              Events Visualization
-            </Typography>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" className={classes.title}>
+                News
+              </Typography>
+              <Button color="inherit">Login</Button>
+            </Toolbar>
+          </AppBar>
           </div>
           <div style={{"paddingBottom": '30px'}}>
           <Typography variant="h4" component="h4">
