@@ -44,7 +44,6 @@ class ResourceInfo extends React.Component {
     }
 
     getResourceEvents() {
-      console.log("start, end", this.state.timeStart, this.state.timeEnd)
       const config = {
         headers: {
           Authorization:
