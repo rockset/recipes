@@ -108,7 +108,7 @@ export default class EventsGraph extends React.Component {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip  content={this.customToolTip}/>
+            <Tooltip />
             <Legend/>
             <Bar dataKey="error" stackId="a" fill={`${RED_COLOR}`} />
             <Bar dataKey="ok" stackId="a" fill={`${GREEN_COLOR}`} />
