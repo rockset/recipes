@@ -26,8 +26,8 @@ class App extends React.Component {
       resource: RESOURCE_TYPES[0],
       prefix: "",
       loading: true,
-      namespaces: ["kube-system"],
-      currentNamespace: "kube-system",
+      namespaces: ["master"],
+      currentNamespace: "master",
       intervalNumber: 0
     };
     this.getEvents = this.getEvents.bind(this);
@@ -62,7 +62,11 @@ class App extends React.Component {
         JOIN
             (SELECT tmp.event.involvedObject.name name, MAX(tmp.event.lastTimestamp) AS MaxDateTime
             FROM commons.eventrouter_events tmp
-            GROUP BY name) gt1
+            WHERE tmp.event.involvedObject.kind = '${this.state.resource}'
+            AND tmp.event.involvedObject.name LIKE '${this.state.prefix}%'
+            AND tmp.event.involvedObject.namespace = '${this.state.currentNamespace}'
+            GROUP BY name
+            ) gt1
         ON t1.event.involvedObject.name = gt1.name 
         AND t1.event.lastTimestamp = gt1.MaxDateTime
         WHERE t1.event.involvedObject.kind = '${this.state.resource}'
