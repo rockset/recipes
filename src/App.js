@@ -26,9 +26,11 @@ class App extends React.Component {
       resource: RESOURCE_TYPES[0],
       prefix: "",
       loading: true,
-      namespaces: ["kube-system"],
-      currentNamespace: "kube-system"
+      namespaces: ["master"],
+      currentNamespace: "master",
+      intervalNumber: 0
     };
+    this.getEvents = this.getEvents.bind(this);
     this.changeResource = this.changeResource.bind(this);
     this.changePrefix = this.changePrefix.bind(this);
     this.queryEvents = this.queryEvents.bind(this);
@@ -47,11 +49,32 @@ class App extends React.Component {
     };
     const body = {
       sql: {
-        query: `SELECT e.event.involvedObject.name, e.verb, e.event.reason, e.event.message, e.event.lastTimestamp FROM commons.eventrouter_events e
-                  WHERE e.event.involvedObject.kind = '${this.state.resource}'
-                  AND e.event.involvedObject.name LIKE '${this.state.prefix}%'
-                  AND e.event.involvedObject.namespace = '${this.state.currentNamespace}'
-                  LIMIT 25
+        query: 
+        `
+        SELECT
+        distinct
+        t1.event.involvedObject.name name,
+        t1.verb,
+        t1.event.reason,
+        t1.event.message,
+        t1.event.lastTimestamp,
+        UNIX_MILLIS(CAST(t1.event.lastTimestamp AS TIMESTAMP)) as ts
+        FROM commons.eventrouter_events t1
+        JOIN
+            (SELECT tmp.event.involvedObject.name name, MAX(tmp.event.lastTimestamp) AS MaxDateTime
+            FROM commons.eventrouter_events tmp
+            WHERE tmp.event.involvedObject.kind = '${this.state.resource}'
+            AND tmp.event.involvedObject.name LIKE '${this.state.prefix}%'
+            AND tmp.event.involvedObject.namespace = '${this.state.currentNamespace}'
+            GROUP BY name
+            ) gt1
+        ON t1.event.involvedObject.name = gt1.name 
+        AND t1.event.lastTimestamp = gt1.MaxDateTime
+        WHERE t1.event.involvedObject.kind = '${this.state.resource}'
+        AND t1.event.involvedObject.name LIKE '${this.state.prefix}%'
+        AND t1.event.involvedObject.namespace = '${this.state.currentNamespace}'
+        ORDER BY ts DESC
+        LIMIT 100
         `
       }
     };
@@ -99,6 +122,7 @@ class App extends React.Component {
 
   queryEvents() {
     this.debounce.cancel();
+    window.clearInterval(this.state.intervalNumber)
     this.debounce();
   }
 
@@ -110,17 +134,23 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getEvents();
+    let _this = this;
+    // Trigger 30 second periodic refresh for realtime k8s updates. 
+    const intervalNumber = setInterval(function(){ _this.getEvents() }, 15000);
+    this.setState({intervalNumber});
     this.getNameSpaces();
   }
 
   changeResource(val) {
     this.setState({ resource: val, loading: true }, () => {
+      window.clearInterval(this.state.intervalNumber)
       this.queryEvents();
     });
   }
 
   changePrefix(e) {
     this.setState({ prefix: e.target.value, loading: true }, () => {
+      window.clearInterval(this.state.intervalNumber)
       this.queryEvents();
     });
   }
