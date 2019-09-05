@@ -15,7 +15,8 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-spinners": "^0.6.1",
-    "react-vertical-timeline-component": "^2.4.0"
+    "react-vertical-timeline-component": "^2.4.0",
+    "recharts": "^1.7.1"
   },
   "scripts": {
     "start": "react-scripts start",

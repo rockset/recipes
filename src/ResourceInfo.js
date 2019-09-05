@@ -8,10 +8,10 @@ import {
   } from "@material-ui/core";
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import EventsTable from './EventsTable';
-import TimeLine from './TimeLine';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import { SquareLoader } from "react-spinners";
+import EventsGraph from './EventsGraph';
 
 
 
@@ -41,6 +41,8 @@ class ResourceInfo extends React.Component {
 
     componentDidMount() {
       this.getResourceEvents();
+      const _this = this;
+      setInterval(function(){ _this.getResourceEvents(); }, 30000);
     }
 
     getResourceEvents() {
@@ -139,11 +141,9 @@ class ResourceInfo extends React.Component {
              <Typography variant="h6"> No events in this time range for the resource. Try selecting a different timeline. </Typography>
              :
              <div>
-             <div style={{"overflow": "scroll", "maxHeight": "400px", "backgroundColor": "lightgray"}}>
-              <Typography variant="h6"> Timeline </Typography>
-              <TimeLine events={this.state.events}/>
-             </div>
-              <Typography variant="h6"> Table of Events </Typography>
+              <EventsTable events={[this.state.events[0]]} mostRecent={true}/>
+              <EventsGraph events={this.state.events}/>
+              <Typography variant="h6" style={{"padding": "10px"}}> All Events In Time Range </Typography>
               <EventsTable events={this.state.events}/>
               </div>
             }

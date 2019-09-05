@@ -27,8 +27,10 @@ class App extends React.Component {
       prefix: "",
       loading: true,
       namespaces: ["kube-system"],
-      currentNamespace: "kube-system"
+      currentNamespace: "kube-system",
+      intervalNumber: 0
     };
+    this.getEvents = this.getEvents.bind(this);
     this.changeResource = this.changeResource.bind(this);
     this.changePrefix = this.changePrefix.bind(this);
     this.queryEvents = this.queryEvents.bind(this);
@@ -47,12 +49,22 @@ class App extends React.Component {
     };
     const body = {
       sql: {
-        query: `SELECT e.event.involvedObject.name, e.verb, e.event.reason, e.event.message, e.event.lastTimestamp FROM commons.eventrouter_events e
-                  WHERE e.event.involvedObject.kind = '${this.state.resource}'
-                  AND e.event.involvedObject.name LIKE '${this.state.prefix}%'
-                  AND e.event.involvedObject.namespace = '${this.state.currentNamespace}'
-                  LIMIT 25
-        `
+        query: 
+        `SELECT t1.event.involvedObject.name, t1.verb, t1.event.reason, t1.event.message, t1.event.lastTimestamp
+        FROM   commons.eventrouter_events t1 
+        INNER JOIN 
+        (
+            SELECT Max(tmp.event.lastTimestamp) lastTimestamp, tmp.event.involvedObject.name name
+            FROM   commons.eventrouter_events tmp
+            GROUP BY tmp.event.involvedObject.name
+        ) AS t2 
+            ON t1.event.involvedObject.name = t2.name
+            AND t1.event.lastTimestamp = t2.lastTimestamp 
+        WHERE t1.event.involvedObject.kind = '${this.state.resource}'
+        AND t1.event.involvedObject.name LIKE '${this.state.prefix}%'
+        AND t1.event.involvedObject.namespace = '${this.state.currentNamespace}'
+        ORDER BY t1.event.lastTimestamp DESC 
+        LIMIT 100`
       }
     };
     axios
@@ -99,6 +111,7 @@ class App extends React.Component {
 
   queryEvents() {
     this.debounce.cancel();
+    window.clearInterval(this.state.intervalNumber)
     this.debounce();
   }
 
@@ -110,17 +123,23 @@ class App extends React.Component {
 
   componentDidMount() {
     this.getEvents();
+    let _this = this;
+    // Trigger 30 second periodic refresh for realtime k8s updates. 
+    const intervalNumber = setInterval(function(){ _this.getEvents() }, 30000);
+    this.setState({intervalNumber});
     this.getNameSpaces();
   }
 
   changeResource(val) {
     this.setState({ resource: val, loading: true }, () => {
+      window.clearInterval(this.state.intervalNumber)
       this.queryEvents();
     });
   }
 
   changePrefix(e) {
     this.setState({ prefix: e.target.value, loading: true }, () => {
+      window.clearInterval(this.state.intervalNumber)
       this.queryEvents();
     });
   }

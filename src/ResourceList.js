@@ -7,8 +7,11 @@ import {
   TableBody
 } from "@material-ui/core";
 import { withRouter } from 'react-router-dom';
+import {NEGATIVE_EVENTS} from './EventTypes.js';
 import './ResourceList.css'
 
+const RED_COLOR = 'rgb(233, 30, 99, 0.4)';
+const GREEN_COLOR ='rgb(16, 204, 82, 0.4)';
 
 class ResourceList extends React.Component {
   constructor(props) {
@@ -26,7 +29,6 @@ class ResourceList extends React.Component {
     for (const event of events) {
         if (!(event['name'] in resources)) {
             resources[event['name']] = event;
-            resources[event['name']]['numEvents'] = 1;
         } else {
             if (event['lastTimestamp'] > resources[event['name']]['lastTimestamp']) {
                 const obj = resources[event['name']];
@@ -34,7 +36,6 @@ class ResourceList extends React.Component {
                 obj['message'] = event['message'];
                 obj['reason'] = event['reason'];
             }
-            resources[event['name']]['numEvents']++;
         }
     }
     return resources;
@@ -42,7 +43,6 @@ class ResourceList extends React.Component {
 
   toResource(resource) {
     this.props.history.push("/resource?name=" + resource);
-    console.log(resource);
   }
 
   render() {
@@ -52,20 +52,25 @@ class ResourceList extends React.Component {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="left">Last Event</TableCell>
+            <TableCell align="left">Last Event Time</TableCell>
             <TableCell align="left">Last Status</TableCell>
-            <TableCell align="left">Number of Events</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {Object.keys(resources).map((resource, idx) => (
-            <TableRow key={idx} onClick={() => this.toResource(resource)} className="ListItem">
+          {Object.keys(resources).map((resource, idx) => {
+            let color;
+            if (NEGATIVE_EVENTS.includes(resources[resource].reason)) {
+                color = RED_COLOR;
+            } else {
+                color = GREEN_COLOR;
+            }
+            return (
+            <TableRow style={{"background": color}} key={idx} onClick={() => this.toResource(resource)} className="ListItem">
               <TableCell align="left">{resources[resource].name}</TableCell>
               <TableCell align="left">{resources[resource].lastTimestamp}</TableCell>
               <TableCell align="left">{resources[resource].reason}</TableCell>
-              <TableCell align="left">{resources[resource].numEvents}</TableCell>
             </TableRow>
-          ))}
+          )})}
         </TableBody>
       </Table>
     );
