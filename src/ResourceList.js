@@ -54,6 +54,7 @@ class ResourceList extends React.Component {
             <TableCell>Name</TableCell>
             <TableCell align="left">Last Event Time</TableCell>
             <TableCell align="left">Last Status</TableCell>
+            <TableCell align="left">Last Message</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,6 +70,7 @@ class ResourceList extends React.Component {
               <TableCell align="left">{resources[resource].name}</TableCell>
               <TableCell align="left">{resources[resource].lastTimestamp}</TableCell>
               <TableCell align="left">{resources[resource].reason}</TableCell>
+              <TableCell align="left">{resources[resource].message}</TableCell>
             </TableRow>
           )})}
         </TableBody>

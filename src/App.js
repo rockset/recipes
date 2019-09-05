@@ -57,7 +57,8 @@ class App extends React.Component {
         t1.verb,
         t1.event.reason,
         t1.event.message,
-        t1.event.lastTimestamp
+        t1.event.lastTimestamp,
+        UNIX_MILLIS(CAST(t1.event.lastTimestamp AS TIMESTAMP)) as ts
         FROM commons.eventrouter_events t1
         JOIN
             (SELECT tmp.event.involvedObject.name name, MAX(tmp.event.lastTimestamp) AS MaxDateTime
@@ -72,6 +73,7 @@ class App extends React.Component {
         WHERE t1.event.involvedObject.kind = '${this.state.resource}'
         AND t1.event.involvedObject.name LIKE '${this.state.prefix}%'
         AND t1.event.involvedObject.namespace = '${this.state.currentNamespace}'
+        ORDER BY ts DESC
         LIMIT 100
         `
       }

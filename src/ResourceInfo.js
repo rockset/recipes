@@ -31,7 +31,7 @@ class ResourceInfo extends React.Component {
         this.state = {
             resourceName: urlParams.get('name'),
             events: [],
-            timeStart: timeAtHoursBefore(1),
+            timeStart: timeAtHoursBefore(2),
             timeEnd: new Date().getTime(),
             loading: true   
         }
