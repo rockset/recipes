@@ -42,7 +42,7 @@ class ResourceInfo extends React.Component {
     componentDidMount() {
       this.getResourceEvents();
       const _this = this;
-      setInterval(function(){ _this.getResourceEvents(); }, 30000);
+      setInterval(function(){ _this.getResourceEvents(); }, 15000);
     }
 
     getResourceEvents() {

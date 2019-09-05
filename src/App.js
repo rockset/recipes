@@ -136,7 +136,7 @@ class App extends React.Component {
     this.getEvents();
     let _this = this;
     // Trigger 30 second periodic refresh for realtime k8s updates. 
-    const intervalNumber = setInterval(function(){ _this.getEvents() }, 30000);
+    const intervalNumber = setInterval(function(){ _this.getEvents() }, 15000);
     this.setState({intervalNumber});
     this.getNameSpaces();
   }
