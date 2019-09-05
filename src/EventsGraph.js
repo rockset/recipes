@@ -1,16 +1,11 @@
 import React from 'react';
 import {
-    BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   } from 'recharts';
 import {NEGATIVE_EVENTS} from './EventTypes';
 
 const RED_COLOR = 'rgb(233, 30, 99, 0.8)';
 const GREEN_COLOR ='rgb(16, 204, 82, 0.8)';
-
-// Number of seconds that we "bucket"
-// events to in order to show them in the same
-// bar. Currently set to 5 mins (300000 ms).
-const BUCKET_GRANULARITY = 300000;
 
 export default class EventsGraph extends React.Component {
     constructor(props) {
@@ -43,6 +38,7 @@ export default class EventsGraph extends React.Component {
             if (mins.length < 2) {
                 mins = "0" + mins
             }
+            // bucket in per-min granularity
             const name = date.getMonth() + "/" + date.getDay() + " " + date.getHours() + ":" + mins
             if (NEGATIVE_EVENTS.includes(reason)) {
                 unbucketedData.push({
@@ -86,7 +82,7 @@ export default class EventsGraph extends React.Component {
         if (payload.length < 2) {
             return "";
         }
-        const zeroIsError = payload[0].dataKey == 'error'
+        const zeroIsError = payload[0].dataKey === 'error'
         const errorData = zeroIsError ?  payload[0] :  payload[1];
         const okData = zeroIsError ? payload[1] : payload[0]
         return (

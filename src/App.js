@@ -50,21 +50,26 @@ class App extends React.Component {
     const body = {
       sql: {
         query: 
-        `SELECT t1.event.involvedObject.name, t1.verb, t1.event.reason, t1.event.message, t1.event.lastTimestamp
-        FROM   commons.eventrouter_events t1 
-        INNER JOIN 
-        (
-            SELECT Max(tmp.event.lastTimestamp) lastTimestamp, tmp.event.involvedObject.name name
-            FROM   commons.eventrouter_events tmp
-            GROUP BY tmp.event.involvedObject.name
-        ) AS t2 
-            ON t1.event.involvedObject.name = t2.name
-            AND t1.event.lastTimestamp = t2.lastTimestamp 
+        `
+        SELECT
+        distinct
+        t1.event.involvedObject.name name,
+        t1.verb,
+        t1.event.reason,
+        t1.event.message,
+        t1.event.lastTimestamp
+        FROM commons.eventrouter_events t1
+        JOIN
+            (SELECT tmp.event.involvedObject.name name, MAX(tmp.event.lastTimestamp) AS MaxDateTime
+            FROM commons.eventrouter_events tmp
+            GROUP BY name) gt1
+        ON t1.event.involvedObject.name = gt1.name 
+        AND t1.event.lastTimestamp = gt1.MaxDateTime
         WHERE t1.event.involvedObject.kind = '${this.state.resource}'
         AND t1.event.involvedObject.name LIKE '${this.state.prefix}%'
         AND t1.event.involvedObject.namespace = '${this.state.currentNamespace}'
-        ORDER BY t1.event.lastTimestamp DESC 
-        LIMIT 100`
+        LIMIT 100
+        `
       }
     };
     axios
