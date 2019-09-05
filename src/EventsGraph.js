@@ -31,7 +31,7 @@ export default class EventsGraph extends React.Component {
         let bucketedData = []
         let unbucketedData = []
         for (const event of this.props.events) {
-            const {reason, lastTimestamp} = event;
+            const {reason, lastTimestamp, message} = event;
             const dateSecs = Date.parse(lastTimestamp);
             const date = new Date(dateSecs);
             let mins = date.getMinutes().toString();
@@ -43,12 +43,14 @@ export default class EventsGraph extends React.Component {
             if (NEGATIVE_EVENTS.includes(reason)) {
                 unbucketedData.push({
                     name,
-                    error: 1
+                    error: 1,
+                    message
                 })
             } else {
                 unbucketedData.push({
                     name,
-                    ok: 1
+                    ok: 1,
+                    message
                 })
             }
         }
@@ -56,12 +58,14 @@ export default class EventsGraph extends React.Component {
         for (const dataPoint of unbucketedData) {
             // First value for data point
             if (!mapping[dataPoint["name"]]) {
-                mapping[dataPoint["name"]] = {error: 0, ok: 0}
+                mapping[dataPoint["name"]] = {error: 0, ok: 0, errMessages: [], okMessages: []};
             }
             if (dataPoint['error'] === 1) {
-                mapping[dataPoint["name"]]["error"]++
+                mapping[dataPoint["name"]]["error"]++;
+                mapping[dataPoint["name"]]['errMessages'].push(dataPoint['message']);
             } else {
-                mapping[dataPoint["name"]]["ok"]++
+                mapping[dataPoint["name"]]["ok"]++;
+                mapping[dataPoint["name"]]['okMessages'].push(dataPoint['message']);
             }
         }
         for (const name of Object.keys(mapping)) {
@@ -84,10 +88,15 @@ export default class EventsGraph extends React.Component {
         }
         const zeroIsError = payload[0].dataKey === 'error'
         const errorData = zeroIsError ?  payload[0] :  payload[1];
-        const okData = zeroIsError ? payload[1] : payload[0]
+        const okData = zeroIsError ? payload[1] : payload[0];
+        const set = new Set(errorData['payload']['errMessages']);
         return (
             <div style={{"background": "white", padding: 20}}>
+                <p> error: {errorData['payload']['name']} </p>
                 <p style={{color: `${RED_COLOR}`}}> error: {errorData['value']} </p>
+                {Array.from(set).map((elem) => (
+                    <p style={{color: `${RED_COLOR}`}}> {elem} </p>
+                ))}
                 <p style={{color: `${GREEN_COLOR}`}}> ok: {okData['value']} </p>
             </div>
         )
@@ -108,7 +117,7 @@ export default class EventsGraph extends React.Component {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={this.customToolTip}/>
             <Legend/>
             <Bar dataKey="error" stackId="a" fill={`${RED_COLOR}`} />
             <Bar dataKey="ok" stackId="a" fill={`${GREEN_COLOR}`} />
