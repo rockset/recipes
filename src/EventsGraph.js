@@ -39,7 +39,7 @@ export default class EventsGraph extends React.Component {
                 mins = "0" + mins
             }
             // bucket in per-min granularity
-            const name = date.getMonth() + "/" + date.getDay() + " " + date.getHours() + ":" + mins
+            const name = (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + mins
             if (NEGATIVE_EVENTS.includes(reason)) {
                 unbucketedData.push({
                     name,

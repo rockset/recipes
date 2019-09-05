@@ -58,7 +58,7 @@ class ResourceInfo extends React.Component {
                     WHERE e.event.involvedObject.name = '${this.state.resourceName}'
                     AND UNIX_MILLIS(PARSE_TIMESTAMP_ISO8601(e.event.lastTimestamp)) > ${this.state.timeStart}
                     AND UNIX_MILLIS(PARSE_TIMESTAMP_ISO8601(e.event.lastTimestamp)) < ${this.state.timeEnd}
-                    ORDER BY UNIX_MILLIS(e._event_time) DESC
+                    ORDER BY UNIX_MILLIS(cast(e.event.lastTimestamp as timestamp)) DESC
           `
         }
       };
@@ -129,6 +129,7 @@ class ResourceInfo extends React.Component {
                 shrink: true,
               }}
               style={{"marginLeft": '50px'}}
+              onChange={this.changeEndTime}
             />
           </div>
           {this.state.loading ?
