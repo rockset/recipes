@@ -21,7 +21,7 @@ spec:
         image: rockset/eventrouter_viz:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
         resources:
           limits:
             memory: "1Gi"
