@@ -7,11 +7,7 @@ import {
   TableBody
 } from "@material-ui/core";
 import { withRouter } from 'react-router-dom';
-import {NEGATIVE_EVENTS} from './EventTypes.js';
 import './ResourceList.css'
-
-const RED_COLOR = 'rgb(233, 30, 99, 0.4)';
-const GREEN_COLOR ='rgb(16, 204, 82, 0.4)';
 
 class ResourceList extends React.Component {
   constructor(props) {
@@ -59,14 +55,8 @@ class ResourceList extends React.Component {
         </TableHead>
         <TableBody>
           {Object.keys(resources).map((resource, idx) => {
-            let color;
-            if (NEGATIVE_EVENTS.includes(resources[resource].reason)) {
-                color = RED_COLOR;
-            } else {
-                color = GREEN_COLOR;
-            }
             return (
-            <TableRow style={{"background": color}} key={idx} onClick={() => this.toResource(resource)} className="ListItem">
+            <TableRow key={idx} onClick={() => this.toResource(resource)} className="ListItem">
               <TableCell align="left">{resources[resource].name}</TableCell>
               <TableCell align="left">{resources[resource].lastTimestamp}</TableCell>
               <TableCell align="left">{resources[resource].reason}</TableCell>

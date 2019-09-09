@@ -11,13 +11,20 @@ export default class EventsGraph extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            eventGroups: []
+            eventGroups: [],
+            granularity: props.granularity
         }
         this.customToolTip = this.customToolTip.bind(this);
     }
 
     componentDidMount() {
         this.buildEventGroups();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({granularity: nextProps.granularity}, () => {
+            this.buildEventGroups();
+        });
     }
 
     sortDataPoints(a, b) {
@@ -27,6 +34,30 @@ export default class EventsGraph extends React.Component {
         return 0
     }
 
+    constructLabel(date) {
+        const {granularity} = this.state;
+        let mins = date.getMinutes().toString();
+        let name = "";
+        if (granularity === "1 minute") {
+            if (mins.length < 2) {
+                mins = "0" + mins
+            }
+            name = (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + mins;    
+        }
+        else if (granularity === "10 minutes") {
+            mins = mins - mins % 10;
+            name = (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + mins;    
+        }
+        else if (granularity === "60 minutes") {
+            name = (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":00";
+        }
+        // 1 day granularity
+        else {
+            name = (date.getMonth() + 1) + "/" + date.getDate();
+        }
+        return name;
+    }
+
     buildEventGroups() {
         let bucketedData = []
         let unbucketedData = []
@@ -34,12 +65,8 @@ export default class EventsGraph extends React.Component {
             const {reason, lastTimestamp, message} = event;
             const dateSecs = Date.parse(lastTimestamp);
             const date = new Date(dateSecs);
-            let mins = date.getMinutes().toString();
-            if (mins.length < 2) {
-                mins = "0" + mins
-            }
-            // bucket in per-min granularity
-            const name = (date.getMonth() + 1) + "/" + date.getDate() + " " + date.getHours() + ":" + mins
+            // bucket in specified granularity
+            const name = this.constructLabel(date);
             if (NEGATIVE_EVENTS.includes(reason)) {
                 unbucketedData.push({
                     name,
@@ -95,7 +122,7 @@ export default class EventsGraph extends React.Component {
                 <p> error: {errorData['payload']['name']} </p>
                 <p style={{color: `${RED_COLOR}`}}> error: {errorData['value']} </p>
                 {Array.from(set).map((elem) => (
-                    <p style={{color: `${RED_COLOR}`}}> {elem} </p>
+                    <p style={{color: `${RED_COLOR}`}} key={elem}> {elem} </p>
                 ))}
                 <p style={{color: `${GREEN_COLOR}`}}> ok: {okData['value']} </p>
             </div>

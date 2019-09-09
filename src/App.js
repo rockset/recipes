@@ -16,7 +16,7 @@ import _ from "lodash";
 import { SquareLoader } from "react-spinners";
 
 
-const RESOURCE_TYPES = ["Pod", "Node", "Deployment", "ReplicaSet", "DaemonSet", "CronJob", "HorizontalPodAutoscaler", "Job", "StatefulSet", "Service", "Endpoints", "ConfigMap", "Ingress", "Issuer"];
+const RESOURCE_TYPES = ["Deployment", "Node", "Pod", "ReplicaSet", "DaemonSet", "CronJob", "HorizontalPodAutoscaler", "Job", "StatefulSet", "Service", "Endpoints", "ConfigMap", "Ingress", "Issuer"];
 const drawerWidth = 240;
 class App extends React.Component {
   constructor(props) {

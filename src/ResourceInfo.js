@@ -4,7 +4,9 @@ import {
     Typography,
     AppBar,
     Toolbar,
-    TextField
+    TextField,
+    Select,
+    MenuItem
   } from "@material-ui/core";
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import EventsTable from './EventsTable';
@@ -24,6 +26,8 @@ function timeAtHoursBefore(hours) {
   return milis - difference;
 }
 
+const GRANULARITY_OPTIONS = ["1 minute", "10 minutes", "60 minutes", "1 day"]
+
 class ResourceInfo extends React.Component {
     constructor(props) {
         super(props);
@@ -33,7 +37,8 @@ class ResourceInfo extends React.Component {
             events: [],
             timeStart: timeAtHoursBefore(2),
             timeEnd: new Date().getTime(),
-            loading: true   
+            loading: true,
+            granularity: GRANULARITY_OPTIONS[0]
         }
         this.changeStartTime = this.changeStartTime.bind(this);
         this.changeEndTime = this.changeEndTime.bind(this);
@@ -96,7 +101,7 @@ class ResourceInfo extends React.Component {
 
 
   render() {
-    const {resourceName, timeStart, timeEnd, events} = this.state;
+    const {resourceName, timeStart, timeEnd, events, granularity} = this.state;
     const startStr = this.dateToSelectorString(timeStart);
     const endStr = this.dateToSelectorString(timeEnd);
     return (
@@ -143,7 +148,13 @@ class ResourceInfo extends React.Component {
              :
              <div>
               <EventsTable events={[this.state.events[0]]} mostRecent={true}/>
-              <EventsGraph events={this.state.events}/>
+              <Typography variant="h6" style={{"padding": "10px"}}> Event Granularity </Typography>
+              <Select style={{"width": "200px", "marginLeft": "10px"}} value={granularity} onChange={e => this.setState({ granularity: e.target.value })}>
+                {GRANULARITY_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}> {option} </MenuItem>
+                ))}
+              </Select>
+              <EventsGraph events={this.state.events} granularity={granularity}/>
               <Typography variant="h6" style={{"padding": "10px"}}> All Events In Time Range </Typography>
               <EventsTable events={this.state.events}/>
               </div>
