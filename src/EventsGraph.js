@@ -116,15 +116,19 @@ export default class EventsGraph extends React.Component {
         const zeroIsError = payload[0].dataKey === 'error'
         const errorData = zeroIsError ?  payload[0] :  payload[1];
         const okData = zeroIsError ? payload[1] : payload[0];
-        const set = new Set(errorData['payload']['errMessages']);
+        const errSet = new Set(errorData['payload']['errMessages']);
+        const okSet = new Set(errorData['payload']['okMessages']);
         return (
             <div style={{"background": "white", padding: 20}}>
                 <p> error: {errorData['payload']['name']} </p>
                 <p style={{color: `${RED_COLOR}`}}> error: {errorData['value']} </p>
-                {Array.from(set).map((elem) => (
+                {Array.from(errSet).map((elem) => (
                     <p style={{color: `${RED_COLOR}`}} key={elem}> {elem} </p>
                 ))}
                 <p style={{color: `${GREEN_COLOR}`}}> ok: {okData['value']} </p>
+                {Array.from(okSet).map((elem) => (
+                    <p style={{color: `${GREEN_COLOR}`}} key={elem}> {elem} </p>
+                ))}
             </div>
         )
     }

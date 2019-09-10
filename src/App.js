@@ -8,7 +8,9 @@ import {
   Toolbar,
   Drawer,
   InputBase,
-  Select
+  Select,
+  Checkbox,
+  FormControlLabel
 } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import ResourceList from './ResourceList';
@@ -28,13 +30,15 @@ class App extends React.Component {
       loading: true,
       namespaces: ["master"],
       currentNamespace: "master",
-      intervalNumber: 0
+      intervalNumber: 0,
+      showKilledResources: false
     };
     this.getEvents = this.getEvents.bind(this);
     this.changeResource = this.changeResource.bind(this);
     this.changePrefix = this.changePrefix.bind(this);
     this.queryEvents = this.queryEvents.bind(this);
     this.updateNamespace = this.updateNamespace.bind(this);
+    this.changeKilledResources = this.changeKilledResources.bind(this);
     this.debounce = _.debounce(function() {
       this.getEvents();
     }, 1000);
@@ -58,10 +62,11 @@ class App extends React.Component {
         t1.event.reason,
         t1.event.message,
         t1.event.lastTimestamp,
+        t1._event_time,
         UNIX_MILLIS(CAST(t1.event.lastTimestamp AS TIMESTAMP)) as ts
         FROM commons.eventrouter_events t1
         JOIN
-            (SELECT tmp.event.involvedObject.name name, MAX(tmp.event.lastTimestamp) AS MaxDateTime
+            (SELECT tmp.event.involvedObject.name name, MAX(tmp._event_time) AS MaxDateTime
             FROM commons.eventrouter_events tmp
             WHERE tmp.event.involvedObject.kind = '${this.state.resource}'
             AND tmp.event.involvedObject.name LIKE '${this.state.prefix}%'
@@ -69,10 +74,11 @@ class App extends React.Component {
             GROUP BY name
             ) gt1
         ON t1.event.involvedObject.name = gt1.name 
-        AND t1.event.lastTimestamp = gt1.MaxDateTime
+        AND t1._event_time = gt1.MaxDateTime
         WHERE t1.event.involvedObject.kind = '${this.state.resource}'
         AND t1.event.involvedObject.name LIKE '${this.state.prefix}%'
         AND t1.event.involvedObject.namespace = '${this.state.currentNamespace}'
+        ${this.state.showKilledResources  ? '': 'AND t1.event.reason != \'Killing\''}
         ORDER BY ts DESC
         LIMIT 100
         `
@@ -155,6 +161,13 @@ class App extends React.Component {
     });
   }
 
+  changeKilledResources(e) {
+    this.setState({showKilledResources: !this.state.showKilledResources, loading: true}, () => {
+      window.clearInterval(this.state.intervalNumber);
+      this.queryEvents();
+    })
+  }
+
   render() {
     const {
       events,
@@ -218,6 +231,15 @@ class App extends React.Component {
           </AppBar>
         </div>
         <div style={{marginLeft: `${drawerWidth}px`}}>
+          <div style={{"marginLeft": 10}}>
+        <FormControlLabel
+            style={{paddingLeft: '200'}}
+            control={
+              <Checkbox checked={this.state.showKilledResources} onChange={this.changeKilledResources} value="" />
+            }
+            label="Show Killed Resources"
+          />
+          </div>
           {this.state.loading ?
             <div style={{"paddingLeft" :"50%", paddingTop: "20%"}}>
               <SquareLoader size={150} color={"#3f51b5"}/>
