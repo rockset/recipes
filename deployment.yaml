@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: eventrouter-viz
-        image: rockset/eventrouter_viz:latest
+        image: rockset/eventrouter_viz:1.0
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
