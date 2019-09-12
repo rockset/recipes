@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: eventrouter-viz
-  namespace: raguiar
   labels:
     app: eventrouter-viz
 spec:
@@ -18,7 +17,8 @@ spec:
     spec:
       containers:
       - name: eventrouter-viz
-        image: rockset/eventrouter_viz:1.0
+        image: myrepo/replaceme
+        command: ["serve", "-s", "build"]
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
@@ -27,12 +27,5 @@ spec:
             memory: "1Gi"
           requests:
             memory: "200Mi"
-      imagePullSecrets:
-      - name: registry
-      tolerations:
-      - key: "role"
-        operator: "Equal"
-        value: "generic"
-        effect: "NoSchedule"
 
 

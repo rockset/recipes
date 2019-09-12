@@ -12,4 +12,4 @@ spec:
   selector:
     app: eventrouter-viz
   sessionAffinity: None
-  type: NodePort
+  type: LoadBalancer
