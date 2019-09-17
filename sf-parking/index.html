@@ -107,8 +107,7 @@
       showMessage("querying");
       var lat = position.coords.latitude;
       var lon = position.coords.longitude;
-      fetch(
-        'https://aj8wl2pz30.execute-api.us-west-2.amazonaws.com/default/sf-parking?lat=' + lat + '&lon=' + lon,
+      fetch('INVOKE_URL/sf-parking?lat=' + lat + '&lon=' + lon,
         { method: 'POST' }
       ).then(function (response) {
         return response.json();
