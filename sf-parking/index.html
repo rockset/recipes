@@ -90,6 +90,7 @@
       color: white;        
     }
   </style>
+  <script src="/api.js"></script>
   <script type="text/javascript">
     function getLocation() {
       document.getElementById("location-button").style.display = "none";
@@ -107,7 +108,7 @@
       showMessage("querying");
       var lat = position.coords.latitude;
       var lon = position.coords.longitude;
-      fetch('INVOKE_URL/sf-parking?lat=' + lat + '&lon=' + lon,
+      fetch(INVOKE_URL + '/sf-parking?lat=' + lat + '&lon=' + lon,
         { method: 'POST' }
       ).then(function (response) {
         return response.json();
