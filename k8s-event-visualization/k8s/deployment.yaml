@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventrouter-viz
+  labels:
+    app: eventrouter-viz
+spec:
+  selector:
+    matchLabels:
+      app: eventrouter-viz
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: eventrouter-viz
+        tier: web
+    spec:
+      containers:
+      - name: eventrouter-viz
+        image: myrepo/replaceme
+        command: ["serve", "-s", "build"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        resources:
+          limits:
+            memory: "1Gi"
+          requests:
+            memory: "200Mi"
+
+
