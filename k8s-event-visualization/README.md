@@ -1,6 +1,6 @@
 
 
-## Dashboard 
+## Kubernetes Events Dashboard 
 
 The steps to deploy this dashboard are as follows:
 
