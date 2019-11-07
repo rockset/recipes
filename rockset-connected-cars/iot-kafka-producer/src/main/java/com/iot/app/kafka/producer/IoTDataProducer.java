@@ -111,7 +111,8 @@ class RockSetDataProducer extends IoTDataProducer implements Runnable {
 					String coords = getCoordinates(routeId);
 					String latitude = coords.substring(0, coords.indexOf(","));
 					String longitude = coords.substring(coords.indexOf(",") + 1, coords.length());
-					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed, fuelLevel, tyrePressure);
+					int speedDeviation = rand.nextInt(20 + 20) - 20;
+					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed + speedDeviation , fuelLevel, tyrePressure);
 					eventList.add(event);
 				}
 			}
