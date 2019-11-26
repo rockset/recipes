@@ -48,7 +48,7 @@ public class IoTDataProducer {
 		Producer<String, IoTData> producer = new Producer<String, IoTData>(new ProducerConfig(properties));
 		//RockSetDataProducer iotProducer = new RockSetDataProducer();
 		//iotProducer.run(producer,topic);		
-		int n = 10; // Number of threads: 1000 vehicles, 100 vehicles per thread. 
+		int n = 100; // Number of threads: 10000 vehicles, 100 vehicles per thread. 
         	for (int i=0; i<n; i++) { 
             		Thread object = new Thread(new RockSetDataProducer(producer,topic)); 
             		object.start(); 
