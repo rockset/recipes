@@ -6,12 +6,14 @@
 # 10 buckets per second, histogram of query latency
 
 import argparse
-import threading
 import timeit
-import time
 import random
+import schedule
+import time
+import matplotlib.pyplot as plt
 from rockset import Client, Q, F
 from constants import *
+from multiprocessing import Pool
 
 default_qps=10
 default_time=10 #mins 
@@ -26,58 +28,71 @@ args = parser.parse_args()
 user_qps = args.qps
 user_loadtime = args.totalTime
 
+results = []
 
 # rockset query API
-def rocksetQueryMaker(query):
+def rockset_querymaker(query):
     # connect to Rockset
-    api_key = ""
+
     rs = Client(api_key=api_key)
-    print("query is "+query)
-    if query=="query1":
-        print (timeit.timeit(str(rs.sql(Q(query1)))))
-    elif query=="query4":
-        print (timeit.timeit(str(rs.sql(Q(query4)))))
-    elif query=="query5":
-        print (timeit.timeit(str(rs.sql(Q(query5)))))
-    else:
+    print("query is", query)
+
+    if query not in queries:
         print("Err!")
 
+        return
 
-# thread spawner
-def spawnThread(process_name,queryList):
-    random.shuffle(queryList)
-    for i in range(len(queryList)):
-        t=threading.Thread(target=process_name, args=(queryList[i],))
-        t.start()
-        time.sleep(1)
+    time = timeit.timeit(str(rs.sql(Q(queries[query]))))
+
+    print(query, 1000 * time)
+
+    return query, time * 1000
+
+# process spawner
+def spawn_processes(process_name, query_list):
+    pool = Pool(processes=2 * user_qps)
+
+    return pool.map(rockset_querymaker, query_list)
 
 # Define a function for the thread
-def workloadGenerator(qps):
-    # 5 threads of q1 if qps = 10
-    # 3 threads of q2
-    # 2 threads of q5
+def workload_generator(qps):
+    query_list = []
+
+    for query_no, percentage in query_map.items():
+        number_of_processes = int((float(qps) * float(percentage)) / float(100))
+
+        query_list.extend([query_no] * number_of_processes)
+
+    random.shuffle(query_list)
     
-    numberofthread_q1 = int((float(qps)*float(50))/float(100))
-    numberofthread_q4 = int((float(qps)*float(30))/float(100))
-    numberofthread_q5 = int((float(qps)*float(20))/float(100))
-
-    queryList = []
-
-    for i in range(numberofthread_q1):
-        queryList.append("query1")
-
-    for i in range(numberofthread_q4):
-        queryList.append("query4")
-
-    for i in range(numberofthread_q5):
-        queryList.append("query5")
-    
-    spawnThread(rocksetQueryMaker,queryList)
+    results.append(spawn_processes(rockset_querymaker, query_list))
 
 def main():
-    endTime = time.time()+user_loadtime
-    while time.time()<endTime:
-    	workloadGenerator(user_qps)
+    end_time = time.time() + user_loadtime
+
+    schedule.every().second.do(workload_generator, qps=user_qps)
+
+    while time.time() < end_time:
+        schedule.run_pending()
+        time.sleep(1)
+
+    query_times = {}
+
+    for query in query_map:
+        query_times[query] = []
+
+    for seconds_output in results:
+        for query_response in seconds_output:
+            query_times[query_response[0]].append(query_response[1])
+
+    plt.hist(query_times['q1'], bins=10, label='q1')
+    plt.hist(query_times['q2'], bins=10, label='q2')
+    plt.hist(query_times['q3'], bins=10, label='q3')
+    plt.hist(query_times['q4'], bins=10, label='q4')
+    plt.legend(loc='upper right')
+    plt.xlabel('Time in milliseconds')
+    plt.ylabel('Number of Queries')
+    plt.show()
 
 if __name__=="__main__":
     main()
