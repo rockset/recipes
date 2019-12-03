@@ -20,7 +20,7 @@ default_time=10 #mins
 
 # take inputs from user if passed
 parser = argparse.ArgumentParser()
-parser.add_argument("--qps", help="specify query per second, default = 10", type=int, default=10)
+parser.add_argument("--qps", help="specify query per second, default = 20", type=int, default=10)
 parser.add_argument("--totalTime", help="specify total time(in seconds) for the workload, default = 600", type=int, default=600)
 
 args = parser.parse_args()
