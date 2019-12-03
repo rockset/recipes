@@ -1,4 +1,17 @@
-query1 = "SELECT * FROM vehicleinfo LIMIT 1"
+query1 = """
+            SELECT
+                COUNT(
+                    DISTINCT ST_GEOGPOINT(
+                        CAST(vehicleinfo.longitude AS float),
+                        CAST(vehicleinfo.latitude AS float)
+                    )
+                )
+            FROM
+                commons.vehicleinfo
+            WHERE
+                vehicleinfo._event_time > CURRENT_TIMESTAMP() - SECONDS(5)
+                AND vehicleinfo.vehicleId = '417daf89-892c-414a-9ae5-5f4c231c8996'
+        """
 query2 = """
             SELECT
                 DISTINCT vehicleinfo.vehicleId,
