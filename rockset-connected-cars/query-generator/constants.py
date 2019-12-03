@@ -118,8 +118,8 @@ queries = {
 api_key = "skZMJRZSXLZZj5HAdBjNxUfZbarWV5dLqfVO6U623zW5KROzfY0vNRa22ToZfRRe"
 
 query_map = {
-    'q1': 40,
+    'q1': 50,
     'q2': 40,
-    'q3': 10,
-    'q4': 10
+    'q3': 5,
+    'q4': 5
 }
