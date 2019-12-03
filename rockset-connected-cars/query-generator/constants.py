@@ -31,7 +31,7 @@ query2 = """
                     )
         """
 
-query3 = """
+query4 = """
             SELECT
                 COUNT(DISTINCT vehicleinfo.vehicleId)
             FROM
@@ -40,7 +40,7 @@ query3 = """
                 vehicleinfo._event_time > CURRENT_TIMESTAMP() - SECONDS(5)
         """
 
-query4 = """
+query3 = """
     WITH vehicles_in_last_5_seconds AS (
         SELECT
             vehicleinfo.vehicleId,
