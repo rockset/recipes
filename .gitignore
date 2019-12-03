@@ -8,5 +8,10 @@
 .idea/
 *.iml
 
+# Java files
+*.class
+*.jar
+
 # Data Files
 data/
+
