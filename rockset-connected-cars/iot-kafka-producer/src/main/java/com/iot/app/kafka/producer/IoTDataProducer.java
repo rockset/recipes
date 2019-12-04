@@ -31,10 +31,11 @@ public class IoTDataProducer {
 
 	public static void main(String[] args) throws Exception {
 		// read config file
-		Properties prop = PropertyFileReader.readPropertyFile();		
-		String zookeeper = prop.getProperty("com.iot.app.kafka.zookeeper");
-		String brokerList = prop.getProperty("com.iot.app.kafka.brokerlist");
-		String topic = prop.getProperty("com.iot.app.kafka.topic");
+		// Properties prop = PropertyFileReader.readPropertyFile();
+		//reading properties from env variables		
+		String zookeeper = System.getenv("ZOOKEEPER_URL")+":"+System.getenv("ZOOKEEPER_PORT");
+		String brokerList = System.getenv("KAFKA_URL")+":"+System.getenv("KAFKA_PORT");
+		String topic = System.getenv("KAFKA_TOPICS");
 		logger.info("Using Zookeeper=" + zookeeper + " ,Broker-list=" + brokerList + " and topic " + topic);
 
 		// set producer properties
@@ -48,7 +49,7 @@ public class IoTDataProducer {
 		Producer<String, IoTData> producer = new Producer<String, IoTData>(new ProducerConfig(properties));
 		//RockSetDataProducer iotProducer = new RockSetDataProducer();
 		//iotProducer.run(producer,topic);		
-		int n = 10; // Number of threads: 1000 vehicles, 100 vehicles per thread. 
+		int n = 100; // Number of threads: 10000 vehicles, 100 vehicles per thread. 
         	for (int i=0; i<n; i++) { 
             		Thread object = new Thread(new RockSetDataProducer(producer,topic)); 
             		object.start(); 
@@ -107,11 +108,14 @@ class RockSetDataProducer extends IoTDataProducer implements Runnable {
 				double speed = rand.nextInt(100 - 20) + 20;// random speed between 20 to 100
 				double fuelLevel = rand.nextInt(40 - 10) + 10;
 				double tyrePressure = rand.nextInt(35-30) + 30; // random tyre pressure between 30 to 35
+				double suddenBraking = rand.nextInt(30-5) + 5; // random braking events between 5 to 30
+				double rapidAcceleration = rand.nextInt(30-5) + 5; // random rapid acceleration events between 5 to 30 
 				for (int j = 0; j < 5; j++) {// Add 5 events for each vehicle
 					String coords = getCoordinates(routeId);
 					String latitude = coords.substring(0, coords.indexOf(","));
 					String longitude = coords.substring(coords.indexOf(",") + 1, coords.length());
-					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed, fuelLevel, tyrePressure);
+					int speedDeviation = rand.nextInt(20 + 20) - 20;
+					IoTData event = new IoTData(vehicleId, vehicleType, routeId, latitude, longitude, timestamp, speed + speedDeviation , fuelLevel, tyrePressure, suddenBraking, rapidAcceleration);
 					eventList.add(event);
 				}
 			}

@@ -23,13 +23,15 @@ public class IoTData implements Serializable{
 	private double speed;
 	private double fuelLevel;
 	private double tyrePressure;
+	private double suddenBraking;
+	private double rapidAcceleration;	
 
 	public IoTData(){
 		
 	}
 	
 	public IoTData(String vehicleId, String vehicleType, String routeId, String latitude, String longitude,
-			Date timestamp, double speed, double fuelLevel, double tyrePressure) {
+			Date timestamp, double speed, double fuelLevel, double tyrePressure, double suddenBraking, double rapidAcceleration) {
 		super();
 		this.vehicleId = vehicleId;
 		this.vehicleType = vehicleType;
@@ -40,6 +42,8 @@ public class IoTData implements Serializable{
 		this.speed = speed;
 		this.fuelLevel = fuelLevel;
 		this.tyrePressure = tyrePressure;
+		this.suddenBraking = suddenBraking;
+		this.rapidAcceleration = rapidAcceleration;
 	}
 
 	public String getVehicleId() {
@@ -76,6 +80,14 @@ public class IoTData implements Serializable{
 
 	public double getTyrePressure() {
                 return tyrePressure;
+        }
+
+	public double getSuddenBraking() {
+                return suddenBraking;
+        }
+
+	public double getRapidAcceleration() {
+                return rapidAcceleration;
         }
 
 }
