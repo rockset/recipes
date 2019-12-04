@@ -6,9 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-rockset = "*"
-schedule = "*"
-matplotlib = "*"
+rockset = "==0.6.24b20191202"
+schedule = "==0.6.0"
+matplotlib = "==3.1.2"
 
 [requires]
 python_version = "3.7"
