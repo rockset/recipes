@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
-import com.iot.app.kafka.util.PropertyFileReader;
 import com.iot.app.kafka.vo.IoTData;
 
 import kafka.javaapi.producer.Producer;
@@ -32,10 +34,28 @@ public class IoTDataProducer {
 	public static void main(String[] args) throws Exception {
 		// read config file
 		// Properties prop = PropertyFileReader.readPropertyFile();
-		//reading properties from env variables		
-		String zookeeper = System.getenv("ZOOKEEPER_URL")+":"+System.getenv("ZOOKEEPER_PORT");
-		String brokerList = System.getenv("KAFKA_URL")+":"+System.getenv("KAFKA_PORT");
-		String topic = System.getenv("KAFKA_TOPICS");
+		//reading properties from env variables
+
+		String zookeeper = "";
+		String brokerList = "";
+		String topic = "";
+
+		String pwd = System.getProperty("user.dir");
+
+		try (InputStream input = new FileInputStream(pwd + "/src/main/resources/iot-kafka.properties")) {
+
+            Properties prop = new Properties();
+
+            // load a properties file
+			prop.load(input);
+			
+			zookeeper = prop.getProperty("com.iot.app.kafka.zookeeper");
+			brokerList = prop.getProperty("com.iot.app.kafka.brokerlist");
+			topic = prop.getProperty("com.iot.app.kafka.topic");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+		
 		logger.info("Using Zookeeper=" + zookeeper + " ,Broker-list=" + brokerList + " and topic " + topic);
 
 		// set producer properties
@@ -51,8 +71,8 @@ public class IoTDataProducer {
 		//iotProducer.run(producer,topic);		
 		int n = 100; // Number of threads: 10000 vehicles, 100 vehicles per thread. 
         	for (int i=0; i<n; i++) { 
-            		Thread object = new Thread(new RockSetDataProducer(producer,topic)); 
-            		object.start(); 
+				Thread object = new Thread(new RockSetDataProducer(producer,topic)); 
+				object.start(); 
         	} 
 	}
 
@@ -72,24 +92,21 @@ class RockSetDataProducer extends IoTDataProducer implements Runnable {
 	Producer<String, IoTData> producer;
 	String topic;
 
-	RockSetDataProducer(Producer<String, IoTData> workOnProducer, String workOnTopic)
-    	{
-        	producer = workOnProducer;
-                topic = workOnTopic;
+	RockSetDataProducer(Producer<String, IoTData> workOnProducer, String workOnTopic) {
+        producer = workOnProducer;
+        topic = workOnTopic;
 	}
-  
 	
 	public void run () {
 		try {
-                        // Displaying the thread that is running 
-                        logger.info ("Thread " + Thread.currentThread().getId() + " is running");
+			// Displaying the thread that is running 
+			logger.info ("Thread " + Thread.currentThread().getId() + " is running");
 			generateIoTEvent(producer, topic);
-                }
-                catch (Exception e) {
-                        // Throwing an exception 
-                        logger.error ("Exception is caught");
-                }
-
+        }
+		catch (Exception e) {
+			// Throwing an exception 
+			logger.error ("Exception is caught");
+		}
 	}
 	
 	private void generateIoTEvent(Producer<String, IoTData> producer, String topic) throws InterruptedException {

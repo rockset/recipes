@@ -79,15 +79,15 @@ public class IoTData implements Serializable{
 	}
 
 	public double getTyrePressure() {
-                return tyrePressure;
-        }
+		return tyrePressure;
+	}
 
 	public double getSuddenBraking() {
-                return suddenBraking;
-        }
+		return suddenBraking;
+	}
 
 	public double getRapidAcceleration() {
-                return rapidAcceleration;
-        }
+		return rapidAcceleration;
+	}
 
 }
