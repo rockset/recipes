@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
@@ -31,10 +34,28 @@ public class IoTDataProducer {
 	public static void main(String[] args) throws Exception {
 		// read config file
 		// Properties prop = PropertyFileReader.readPropertyFile();
-		//reading properties from env variables		
-		String zookeeper = System.getenv("ZOOKEEPER_URL")+":"+System.getenv("ZOOKEEPER_PORT");
-		String brokerList = System.getenv("KAFKA_URL")+":"+System.getenv("KAFKA_PORT");
-		String topic = System.getenv("KAFKA_TOPICS");
+		//reading properties from env variables
+
+		String zookeeper = "";
+		String brokerList = "";
+		String topic = "";
+
+		String pwd = System.getProperty("user.dir");
+
+		try (InputStream input = new FileInputStream(pwd + "/src/main/resources/iot-kafka.properties")) {
+
+            Properties prop = new Properties();
+
+            // load a properties file
+			prop.load(input);
+			
+			zookeeper = prop.getProperty("com.iot.app.kafka.zookeeper");
+			brokerList = prop.getProperty("com.iot.app.kafka.brokerlist");
+			topic = prop.getProperty("com.iot.app.kafka.topic");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+		
 		logger.info("Using Zookeeper=" + zookeeper + " ,Broker-list=" + brokerList + " and topic " + topic);
 
 		// set producer properties
