@@ -4,6 +4,8 @@ This is a small script for load testing your Rockset collection with your querie
 
 ### Configuration
 
+Put your Rockset API key in the `rockset_api_key` in the `constants.py`
+
 `python query-generator.py --totalTime 20 --qps 20`
 
 With the above arguments, query generator will run for 20 seconds(totalTime) while firing 20 queries each second(qps).

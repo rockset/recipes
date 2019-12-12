@@ -147,7 +147,7 @@ queries = {
     'q4': query4 
 }
 
-api_key = "skZMJRZSXLZZj5HAdBjNxUfZbarWV5dLqfVO6U623zW5KROzfY0vNRa22ToZfRRe"
+rockset_api_key = "<rockset_api_key>"
 
 query_map = {
     'q1': 50,
