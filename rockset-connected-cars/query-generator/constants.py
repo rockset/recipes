@@ -1,4 +1,6 @@
 query1 = """
+            /* Check whether a vehicle has moved in last 5 seconds */
+
             SELECT
                 COUNT(
                     DISTINCT ST_GEOGPOINT(
@@ -13,6 +15,8 @@ query1 = """
                 AND vehicleinfo.vehicleId = '417daf89-892c-414a-9ae5-5f4c231c8996'
         """
 query2 = """
+            /* Get the number of vehicles that are in a given region in last 5 seconds */
+
             SELECT
                 DISTINCT vehicleinfo.vehicleId,
                 vehicleinfo._event_time
@@ -32,6 +36,8 @@ query2 = """
         """
 
 query4 = """
+            /* Get the number of sensor metric events produced in last 5 seconds */
+
             SELECT
                 COUNT(DISTINCT vehicleinfo.vehicleId)
             FROM
@@ -41,17 +47,22 @@ query4 = """
         """
 
 query3 = """
+    /* Get the vehicles which have moved largest distance in last 5 seconds */
+
+    /* Getting events in last 5 seconds */
     WITH vehicles_in_last_5_seconds AS (
         SELECT
             vehicleinfo.vehicleId,
             vehicleinfo._event_time,
             vehicleinfo.latitude,
-                vehicleinfo.longitude
+            vehicleinfo.longitude
         from
             commons.vehicleinfo
         WHERE
             vehicleinfo._event_time > CURRENT_TIMESTAMP() - SECONDS(5)
         ),
+
+        /* Getting the oldest event time for each vehicle in last 5 seconds */ 
         older_sample_time_for_vehicles as (
         SELECT
             MIN(vehicles_in_last_5_seconds._event_time) as min_time,
@@ -61,6 +72,8 @@ query3 = """
         GROUP BY
             vehicles_in_last_5_seconds.vehicleId
         ),
+
+        /* Getting the location of the vehicle at its oldest time for each vehicle */
         older_sample_location_for_vehicles AS (
         SELECT
             vehicles_in_last_5_seconds.latitude,
@@ -73,6 +86,8 @@ query3 = """
             vehicles_in_last_5_seconds._event_time = older_sample_time_for_vehicles.min_time
             and vehicles_in_last_5_seconds.vehicleId = older_sample_time_for_vehicles.vehicleId
         ),
+
+        /* Getting the latest event time for each vehicle in last 5 seconds */
         latest_sample_time_for_vehicles as (
         SELECT
             MAX(vehicles_in_last_5_seconds._event_time) as max_time,
@@ -82,6 +97,8 @@ query3 = """
         GROUP BY
             vehicles_in_last_5_seconds.vehicleId
         ),
+
+        /* Getting the location of the vehicle at its latest time for each vehicle */
         latest_sample_location_for_vehicles AS (
         SELECT
             vehicles_in_last_5_seconds.latitude,
@@ -94,6 +111,8 @@ query3 = """
             vehicles_in_last_5_seconds._event_time = latest_sample_time_for_vehicles.max_time
             and vehicles_in_last_5_seconds.vehicleId = latest_sample_time_for_vehicles.vehicleId
         ),
+
+        /* Getting the distance covered by each vehicle using the latest and oldest locations */
         distance_for_vehicles AS (
         SELECT
             ST_DISTANCE(
@@ -128,7 +147,7 @@ queries = {
     'q4': query4 
 }
 
-api_key = "skZMJRZSXLZZj5HAdBjNxUfZbarWV5dLqfVO6U623zW5KROzfY0vNRa22ToZfRRe"
+rockset_api_key = "<rockset_api_key>"
 
 query_map = {
     'q1': 50,
