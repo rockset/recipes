@@ -31,7 +31,7 @@ results = []
 def rockset_querymaker(query):
     # connect to Rockset
 
-    rs = Client(api_key=api_key)
+    rs = Client(api_key=rockset_api_key)
     print("query is", query)
 
     if query not in queries:
@@ -65,6 +65,10 @@ def workload_generator(qps):
     results.append(spawn_processes(rockset_querymaker, query_list))
 
 def main():
+    if not rockset_api_key:
+        print('Rockset API key is not found. Set your API key in ROCKSET_API_KEY env variable')
+        return
+
     end_time = time.time() + user_loadtime
 
     schedule.every().second.do(workload_generator, qps=user_qps)
