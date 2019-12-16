@@ -1,3 +1,5 @@
+from os import getenv
+
 query1 = """
             /* Check whether a vehicle has moved in last 5 seconds */
 
@@ -147,7 +149,7 @@ queries = {
     'q4': query4 
 }
 
-rockset_api_key = "<rockset_api_key>"
+rockset_api_key = getenv('ROCKSET_API_KEY', None)
 
 query_map = {
     'q1': 50,
