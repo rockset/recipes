@@ -10,7 +10,7 @@ jsonschema==2.6.0
 lambdarest==5.1.0
 prompt-toolkit==1.0.13
 protobuf==3.6.1
-Pygments==2.3.1
+Pygments==2.7.4
 PyYAML==4.2b1
 requests==2.21.0
 requests-toolbelt==0.8.0
