@@ -25,4 +25,4 @@ texttable==1.5.0
 urllib3==1.24.2
 wcwidth==0.1.7
 webcolors==1.8.1
-Werkzeug==0.15.3
+Werkzeug==2.2.3
