@@ -12,7 +12,7 @@ prompt-toolkit==1.0.13
 protobuf==3.6.1
 Pygments==2.7.4
 PyYAML==5.4
-requests==2.21.0
+requests==2.31.0
 requests-toolbelt==0.8.0
 rockset==0.5.9b20190104
 six==1.12.0
